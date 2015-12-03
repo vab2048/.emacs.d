@@ -1,3 +1,93 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;; Initialisation (Start) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Turn off mouse interface early in startup to avoid momentary display
+(when window-system
+  (menu-bar-mode -1)    ;; Menu bar - file, edit, etc.
+  (tool-bar-mode -1)    ;; Tool bar - buttons under menu bar.
+  (scroll-bar-mode -1)  ;; Scroll bar on side of buffers
+  (tooltip-mode -1))    ;; On: Help text as popup/Off: as text in minibuffer.
+
+;; Don't show the tutorial startup page.
+(setq inhibit-startup-message t) 
+
+;; package.el comes bundles with emacs24+. 
+(require 'package) 
+
+(setq package-archives                        ;; The package-archives list variable contains the
+  '(("gnu" . "http://elpa.gnu.org/packages/") ;; information of where emacs should look for packages
+    ("melpa" . "https://melpa.org/packages/") ;; (e.g. when using M-x list-packages or otherwise).
+    ;; ("marmalade" . "https://marmalade-repo.org/packages/")
+   )) 
+
+;; Whenever Emacs starts up, it automatically calls the function ‘package-initialize’ to
+;; load installed packages AFTER loading the init file and abbrev file (if any) and
+;; before running ‘after-init-hook’. However, we want to explictly load and configure
+;; packages using the 'use-package' tool so we '(package-initialize)' here rather
+;; than wait for emacs to do it after processing the init file.
+(package-initialize)  ;; For loading packages explicitly in the init file.
+
+;; 'use-package' is used to isolate and configure different packages in a 
+;; friendly and tidy manner. It is mandatory for this emacs config.
+;; The following, checks if it is installed - if it isn't it installs it.
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+;; ob-tangle allows you to extract source code from org-mode files
+(require 'ob-tangle)  
+
+;; (org-babel-load-file <file>) loads the Emacs Lisp source code blocks in the given Org-mode <file>.
+(org-babel-load-file (concat user-emacs-directory "config.org"))
+
+;;;;;;;;;;;;;;;;;;;;;;;;; Initialisation (End) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;; Initialise Packages (Start) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+
+;; Automatically byte compile everything that needs byte compiling.
+;; Needs to be put after changes to the load path.
+;; (byte-recompile-directory (expand-file-name "~/.emacs.d") 0)
+
+(require 'column-marker)
+(require 'igrep) ;; 'M-x fgrep-find' useful for finding occurences of a string in a directory.
+
+
+
+(elpy-enable) ;; Always initialise elpy mode (for Python)
+(define-key yas-minor-mode-map (kbd "C-c k") 'yas-expand) ;; Fixing a key binding bug in elpy
+(define-key global-map (kbd "C-c o") 'iedit-mode) ;; Fixing another key binding elpy bug in iedit mode
+
+
+
+;;;;;;;;;;;;;;;;;;;;; Initialise Packages (End) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;; Setting stock variables (Start) ;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(setq custom-safe-themes t)
+(load-theme 'blackboard-mybackground)
+
+
+;; (global-linum-mode 1) ;; Add line numbers to side of emacs.
+
+
+
+;; (which-function-mode 1) ;; Shows which function the point is in.
+
+;;;;;;;;;;;;;;;;;;;;; Setting stock variables (End) ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -7,51 +97,13 @@
  '(ansi-color-names-vector ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
  '(column-number-mode t)
  '(haskell-mode-hook (quote (turn-on-haskell-indentation)))
- '(package-archives (quote (("gnu" . "http://elpa.gnu.org/packages/") ("melpa" . "https://melpa.org/packages/"))))
  '(python-indent-offset 4)
- '(python-shell-interpreter "python3")
- '(tool-bar-mode nil))
-
-;; Does not recursively add subdirectories. 
-(add-to-list 'load-path "~/.emacs.d/lisp/")  
-
-
-(require 'column-marker)
-(require 'igrep) ;; 'M-x fgrep-find' useful for finding occurences of a string in a directory.
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;; Initialise Packages (Start) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(package-initialize)
-
-(elpy-enable) ;; Always initialise elpy mode (for Python)
-(define-key yas-minor-mode-map (kbd "C-c k") 'yas-expand) ;; Fixing a key binding bug in elpy
-(define-key global-map (kbd "C-c o") 'iedit-mode) ;; Fixing another key binding elpy bug in iedit mode
-
-;;;;;;;;;;;;;;;;;;;;; Initialise Packages (End) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;; Setting stock variables (Start) ;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(setq custom-theme-directory "~/.emacs.d/themes/") ;; For enabling color themes.
-(setq custom-safe-themes t)
-(load-theme 'blackboard-mybackground)
-(setq-default indent-tabs-mode nil) ;; Do not use tabs - use spaces instead. 
-(setq org-support-shift-select 'always) ;; For org mode allow using shift to highlight text
-(setq confirm-kill-emacs 'y-or-n-p) ;; Always confirm when exiting
-(setq inhibit-startup-message t) ;; Don't show the startup message.
-(tool-bar-mode -1) ;; Get rid of the toolbar at the top
-(show-paren-mode 1) ;; Highlight pairs of parens
-(electric-pair-mode 1) ;; Automatically introduces closing parenthesis, brackets, braces, etc.
-;; (global-linum-mode 1) ;; Add line numbers to side of emacs.
+ '(python-shell-interpreter "python3"))
 
 
 
-;; (which-function-mode 1) ;; Shows which function the point is in.
 
-;;;;;;;;;;;;;;;;;;;;; Setting stock variables (End) ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;; Global Key Bindings (Start) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

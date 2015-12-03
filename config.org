@@ -1,0 +1,67 @@
+
+* Load Path
+
+The following contains directories which are added to emac's load path.
+That way if you want to configure a package which is not installed using MELPA
+but exists in another folder - you can.
+
+N.B. The (add-to-list 'load-path <path>) function DOES NOT 
+recursively add subdirectories.
+
+#+BEGIN_SRC emacs-lisp
+
+(add-to-list 'load-path "~/.emacs.d/lisp/")  
+
+#+END_SRC
+
+* Themes
+
+** Custom Theme Directory 
+
+The variable "custom-theme-directory" is the default user directory for
+storing custom theme files. The command `customize-create-theme' writes theme
+files into this directory.  By default, Emacs searches for custom themes in this
+directory first---see `custom-theme-load-path'.
+
+#+BEGIN_SRC emacs-lisp
+
+(setq custom-theme-directory "~/.emacs.d/themes/") ;; For enabling color themes.
+
+#+END_SRC
+
+* Sane Defaults
+
+
+#+BEGIN_SRC emacs-lisp
+
+;; Keep all backup and auto-save files in one directory
+(setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
+(setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save-list/" t)))
+
+;; Do not use tabs - use spaces instead. 
+(setq-default indent-tabs-mode nil) 
+
+;; Always confirm when exiting
+(setq confirm-kill-emacs 'y-or-n-p) 
+
+;; Highlight pairs of parens
+(show-paren-mode 1) 
+
+;; Automatically introduces closing parenthesis, brackets, braces, etc.
+(electric-pair-mode 1) 
+
+
+#+END_SRC
+
+* Org Mode
+
+#+BEGIN_SRC emacs-lisp
+
+;; Enable syntax highlighting for source code blocks within an org mode file.
+(setq org-src-fontify-natively t)
+
+;; For org mode allow using shift to highlight text
+;; (setq org-support-shift-select 'always) 
+
+
+#+END_SRC
