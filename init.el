@@ -88,21 +88,6 @@
 
 
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(LaTeX-command-style (quote (("" "%(PDF)%(latex) -shell-escape %(file-line-error) %(extraopts) %S%(PDFout)"))))
- '(ansi-color-names-vector ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
- '(column-number-mode t)
- '(haskell-mode-hook (quote (turn-on-haskell-indentation)))
- '(python-indent-offset 4)
- '(python-shell-interpreter "python3"))
-
-
-
-
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -117,13 +102,8 @@
 
 (global-set-key [f8] 'neotree-toggle)
 
-(global-set-key (kbd "C-M-2") 'ansi-term) ;; C-M-2 opens new ANSI terminal in the current window. 
 
-;; Move between windows: ;;
-(global-set-key (kbd "C-c <left>")  'windmove-left)
-(global-set-key (kbd "C-c <right>") 'windmove-right)
-(global-set-key (kbd "C-c <up>")    'windmove-up)
-(global-set-key (kbd "C-c <down>")  'windmove-down)
+
 
 ;;;;;;;;;;;;;;;;;;;;; Global Key Bindings (End) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -132,60 +112,7 @@
 (add-hook 'LaTeX-mode-hook #'turn-on-flyspell) ;; Enable flyspell mode by default when editing LaTex.
 
 
-;; Binds C-M-! to open a new shell in a new window.
-(defun new-shell (name)
-  "Opens a new shell buffer with the given name in asterisks (*name*) in the current directory and changes the prompt to 'name>'."
-  (interactive "sShell in new window. Enter Name: ")
-  (pop-to-buffer (concat "*" name "*"))
-  (unless (eq major-mode 'shell-mode)
-    (shell (current-buffer))
-    (sleep-for 0 200)
-    (delete-region (point-min) (point-max))
-    (comint-simple-send (get-buffer-process (current-buffer)) 
-                        (concat "export PS1=\"\033[33m" name "\033[0m:\033[35m\\W\033[0m>\""))))
-(global-set-key (kbd "C-M-!") 'new-shell)
 
-;; Binds C-M-1 to open a new shell in the current window.
-(defun new-shell-same-window (name)
-  "Opens a new shell buffer with the given name in asterisks (*name*) in the current directory and changes the prompt to 'name>'."
-  (interactive "sShell in same window. Enter Name: ")
-  (pop-to-buffer-same-window (concat "*" name "*"))
-  (unless (eq major-mode 'shell-mode)
-    (shell (current-buffer))
-    (sleep-for 0 200)
-    (delete-region (point-min) (point-max))
-    (comint-simple-send (get-buffer-process (current-buffer)) 
-                        (concat "export PS1=\"\033[33m" name "\033[0m:\033[35m\\W\033[0m>\""))))
-(global-set-key (kbd "C-M-1") 'new-shell-same-window)
-
-
-
-;; Default face
-(set-face-attribute 'default nil
-:inherit nil 
-:stipple nil 
-:background "#2D3743" 
-:foreground "#F8F8F8" 
-:inverse-video nil 
-:box nil 
-:strike-through nil 
-:overline nil 
-:underline nil 
-:slant 'normal 
-:weight 'normal 
-:height 113 
-:width 'normal 
-:foundry "unknown" 
-:family "DejaVu Sans Mono")
 
 (add-hook 'ansi-termhook 'auto-fill-mode)
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(term ((t (:inherit default :foreground "white" :height 113 :width normal :family "DejaVu Sans Mono"))))
- '(term-color-blue ((t (:background "#008B8B" :foreground "#008B8B"))))
- '(term-color-red ((t (:background "tomato" :foreground "tomato")))))
-
 

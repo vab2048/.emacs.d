@@ -59,10 +59,9 @@ Set up the customize file to its own separate file, instead of having emacs
 save customise settings in init.el.
 
 #+begin_src emacs-lisp
-;; (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-;; (load custom-file)
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(load custom-file)
 #+end_src
-
 
 * Org Mode
 
@@ -74,5 +73,77 @@ save customise settings in init.el.
 ;; For org mode allow using shift to highlight text
 ;; (setq org-support-shift-select 'always) 
 
+
+#+END_SRC
+* M-x eshell, M-x shell, M-x term, M-x ansi-term
+** Opening a shell/terminal
+
+We create two functions: 
+
+| Key Binding | Function Name         | Function Description                                |
+|-------------+-----------------------+-----------------------------------------------------|
+| C-M-1       | new-shell-same-window | Opens a new shell buffer, replacing the buffer in   |
+|             | *custom function*     | the current window.                                 |
+| C-M-!       | new-shell-new-window  | Opens a new shell buffer, replacing the buffer in a |
+|             | *custom function*     | different window                                    |
+| C-M-2       | ansi-term             | Opens an ansi terminal, replacing the buffer in the |
+|             | *built in function*   | current window.                                     |
+
+
+#+BEGIN_SRC emacs-lisp
+
+(defun new-shell-same-window (name)
+  "Opens a new shell buffer with the given name in asterisks (*name*) in the current directory and changes the prompt to 'name>'."
+  (interactive "sShell in same window. Enter Name: ")
+  (pop-to-buffer-same-window (concat "*" name "*"))
+  (unless (eq major-mode 'shell-mode)
+    (shell (current-buffer))
+    (sleep-for 0 200)
+    (delete-region (point-min) (point-max))
+    (comint-simple-send (get-buffer-process (current-buffer)) 
+                        (concat "export PS1=\"\033[33m" name "\033[0m:\033[35m\\W\033[0m>\""))))
+
+;; Binds C-M-1 to open a new shell in the current window.
+(global-set-key (kbd "C-M-1") 'new-shell-same-window)
+
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+
+(defun new-shell-new-window (name)
+  "Opens a new shell buffer with the given name in asterisks (*name*) in the current directory and changes the prompt to 'name>'."
+  (interactive "sShell in new window. Enter Name: ")
+  (pop-to-buffer (concat "*" name "*"))
+  (unless (eq major-mode 'shell-mode)
+    (shell (current-buffer))
+    (sleep-for 0 200)
+    (delete-region (point-min) (point-max))
+    (comint-simple-send (get-buffer-process (current-buffer)) 
+                        (concat "export PS1=\"\033[33m" name "\033[0m:\033[35m\\W\033[0m>\""))))
+
+;; Binds C-M-! to open a new shell in a new window.
+(global-set-key (kbd "C-M-!") 'new-shell-new-window)
+
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+
+;; C-M-2 opens new ANSI terminal in the current window. 
+(global-set-key (kbd "C-M-2") 'ansi-term) 
+
+#+END_SRC
+
+
+
+* Frames, Windows, Buffers
+** Switching
+
+#+BEGIN_SRC emacs-lisp
+
+;; Move between windows: ;;
+(global-set-key (kbd "C-c <left>")  'windmove-left)
+(global-set-key (kbd "C-c <right>") 'windmove-right)
+(global-set-key (kbd "C-c <up>")    'windmove-up)
+(global-set-key (kbd "C-c <down>")  'windmove-down)
 
 #+END_SRC
