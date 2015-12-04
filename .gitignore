@@ -30,3 +30,6 @@ tramp
 
 # cask packages
 .cask/
+
+# Ignore the e-lisp file generated from the (org-babel-load-file) function call.
+config.el
