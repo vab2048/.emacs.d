@@ -53,6 +53,17 @@ directory first---see `custom-theme-load-path'.
 
 #+END_SRC
 
+* Customise Settings
+
+Set up the customize file to its own separate file, instead of having emacs
+save customise settings in init.el.
+
+#+begin_src emacs-lisp
+;; (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+;; (load custom-file)
+#+end_src
+
+
 * Org Mode
 
 #+BEGIN_SRC emacs-lisp
