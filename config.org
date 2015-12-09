@@ -106,7 +106,8 @@ looking initialisation.
   (menu-bar-mode -1)    ;; Menu bar - file, edit, etc.
   (tool-bar-mode -1)    ;; Tool bar - buttons under menu bar.
   (scroll-bar-mode -1)  ;; Scroll bar on side of buffers
-  (tooltip-mode -1))    ;; On: Help text as popup/Off: as text in minibuffer.
+  ;; (tooltip-mode -1)    ;; On: Help text as popup/Off: as text in minibuffer.
+)
 
 ;; Don't show the tutorial startup page.
 (setq inhibit-startup-message t) 
@@ -128,6 +129,21 @@ recursively add subdirectories.
 (add-to-list 'load-path "~/.emacs.d/lisp/")  
 
 #+END_SRC
+
+* Dired Mode
+
+We can give the options that dired mode uses when it calls ls so that
+they are: 
+
+- l: Use the long listing format.
+- a: Show all files including hidden ones.
+- h: Print sizes in human readable format (K, M G etc.)
+
+#+BEGIN_SRC emacs-lisp
+(setq dired-listing-switches "-lah")
+#+END_SRC
+
+
 
 * Buffers, Windows, Frames, and Scratch Buffer
 ** Buffers
@@ -425,6 +441,23 @@ We create two functions:
 * Languages
 ** Python
 ** Haskell
+
+The following configuration assumes that the system has the following
+installed on the host machine:
+- Haskell platform (GHC, GHCi, Prelude, Cabal, etc.)
+- Hlint
+
+*** Haskell Mode
+
+For starters we need to ensure we have Haskell mode installed.
+
+#+begin_src emacs-lisp
+(use-package haskell-mode
+  :ensure t
+)
+#+end_src
+
+
 * ELPA, MELPA Packages
   
 This section uses the 'use-package' package to configure the packages
