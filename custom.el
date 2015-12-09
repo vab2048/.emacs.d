@@ -6,7 +6,6 @@
  ;; If there is more than one, they won't work right.
  '(LaTeX-command-style (quote (("" "%(PDF)%(latex) -shell-escape %(file-line-error) %(extraopts) %S%(PDFout)"))))
  '(ansi-color-names-vector ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
- '(column-number-mode t)
  '(haskell-mode-hook (quote (turn-on-haskell-indentation)))
  '(python-indent-offset 4)
  '(python-shell-interpreter "python3"))

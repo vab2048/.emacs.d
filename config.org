@@ -1,4 +1,118 @@
 
+#+TITLE: Emacs Configuration File
+#+AUTHOR: Vikram Bakshi
+
+
+Key binding explanations:
+- C-c <C-left> - Means CTRL must be pressed for both.
+
+
+* Use-package notes
+** Use-package
+
+The use-package macro is used to configure packages. The syntax is simple:
+
+(use-package <package-name>
+   :<keyword> <arbitrary-elisp>
+   :<keyword> <arbitrary-elisp>
+   : ...
+)
+
+The simplest declaration is: (use-package foo)
+Each subsection below describes a keyword and example usage.
+
+*** :init
+
+Executes code before a package is loaded.
+
+Example:
+(use-package foo
+  :init
+  (setq foo-variable t))
+
+*** :config
+
+Executes code after a package is loaded.
+
+*** :bind
+
+*Example:*
+(use-package ace-jump-mode
+  :bind ("C-." . ace-jump-mode))
+
+This does two things: first, it creates an autoload for the
+ace-jump-mode command and defers loading of ace-jump-mode until you
+actually use it. Second, it binds the key C-. to that command.
+
+*Example 2*
+(use-package hi-lock
+  :bind (("M-o l" . highlight-lines-matching-regexp)
+         ("M-o r" . highlight-regexp)
+         ("M-o w" . highlight-phrase)))
+Same, but taking a list or a list of conses.
+
+*** :mode
+*** :ensure
+*** :interpreter
+*** :load-path
+
+*Example 1*
+(use-package ess-site
+  :load-path "site-lisp/ess/lisp/"
+  :commands R)
+
+*Description*
+This takes a symbol, a function, a string or a list of strings. If
+the path is relative, it is expanded within user-emacs-directory:
+
+*** :no-require
+*** :if
+
+(use-package edit-server
+  :if window-system
+  :init
+  (add-hook 'after-init-hook 'server-start t)
+  (add-hook 'after-init-hook 'edit-server-start t))
+
+*** :diminish
+
+*Example 1*
+(use-package abbrev
+  :diminish abbrev-mode
+  :config
+  (if (file-exists-p abbrev-file-name)
+      (quietly-read-abbrev-file)))
+*Description*
+Removes the minor mode string from the modeline.
+
+
+Use the :init keyword to execute code before a package is loaded. 
+It accepts one or more forms, up until the next keyword:
+
+-  In general, you should keep :init forms as simple and quick as
+   possible, and put as much as you can get away with into the :config
+   block. This way, deferred loading can help your Emacs to start as
+   quickly as possible.
+
+* Initialisation
+
+Customisation options included here are placed for a faster/faster
+looking initialisation.
+
+#+BEGIN_SRC emacs-lisp
+
+;; Turn off mouse interface early in startup to avoid momentary display
+(when window-system
+  (menu-bar-mode -1)    ;; Menu bar - file, edit, etc.
+  (tool-bar-mode -1)    ;; Tool bar - buttons under menu bar.
+  (scroll-bar-mode -1)  ;; Scroll bar on side of buffers
+  (tooltip-mode -1))    ;; On: Help text as popup/Off: as text in minibuffer.
+
+;; Don't show the tutorial startup page.
+(setq inhibit-startup-message t) 
+
+#+END_SRC
+
 * Load Path
 
 The following contains directories which are added to emac's load path.
@@ -10,10 +124,180 @@ recursively add subdirectories.
 
 #+BEGIN_SRC emacs-lisp
 
+;; "~/.emacs.d/lisp/" for custom downloaded lisp files.
 (add-to-list 'load-path "~/.emacs.d/lisp/")  
 
 #+END_SRC
 
+* Buffers, Windows, Frames, and Scratch Buffer
+** Buffers
+*** ibuffer
+
+iBuffer is an improved version of the default 'C-x C-b' (list-buffers
+command). It comes with emacs by default so to use it we just need to define the
+list-buffers command as an alias for it.
+
+See: http://ergoemacs.org/emacs/emacs_buffer_management.html
+
+#+begin_src emacs-lisp
+;; make ibuffer the default buffer lister.
+(defalias 'list-buffers 'ibuffer)
+#+end_src
+
+** Windows
+*** Existing Bindings
+
+| Keys  | Command              | Description                                            |
+| C-x o | other-window         | Move point to other window.                            |
+| C-x 0 | delete-window        | Deletes current window, reducing window count by 1.    |
+| C-x 1 | delete-other-windows | Makes window point is on, sole window.                 |
+| C-x 2 | split-window-below   | Splits current window horizontally into two.           |
+| C-x 3 | split-window-right   | Splits current window vertically into two.             |
+| C-x 4 |                      |                                                        |
+| C-x 5 |                      | Used as a prefix for frame commands                    |
+| C-x + | balance-windows      | Undos the affects of resizing windows so they balance. |
+|       |                      |                                                        |
+
+
+*** Custom Bindings
+**** Splitting windows
+
+Splitting windows does not move the cursor to the other window. The following
+remaps the default keys to move to the other window when it is created.
+
+#+begin_src emacs-lisp
+(defun vsplit-other-window ()
+  "Splits the window vertically and switches to that window."
+  (interactive)
+  (split-window-vertically)
+  (other-window 1 nil))
+(defun hsplit-other-window ()
+  "Splits the window horizontally and switches to that window."
+  (interactive)
+  (split-window-horizontally)
+  (other-window 1 nil))
+
+(global-set-key (kbd "C-x 2") 'vsplit-other-window)
+(global-set-key (kbd "C-x 3") 'hsplit-other-window)
+
+#+end_src
+
+**** Moving between windows
+
+Moving between multiple windows is annoying when you just use 'C-x o'
+(other-window). The following remaps C-c <arrow> to move between windows.
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-c <left>")  'windmove-left)
+(global-set-key (kbd "C-c <right>") 'windmove-right)
+(global-set-key (kbd "C-c <up>")    'windmove-up)
+(global-set-key (kbd "C-c <down>")  'windmove-down)
+
+;; Repeat for keys where CTRL is kept pressed to prevent accidentally holding
+;; CTRL and calling a different command function.
+(global-set-key (kbd "C-c <C-left>")  'windmove-left)
+(global-set-key (kbd "C-c <C-right>") 'windmove-right)
+(global-set-key (kbd "C-c <C-up>")    'windmove-up)
+(global-set-key (kbd "C-c <C-down>")  'windmove-down)
+#+END_SRC
+
+**** Re-sizing windows
+
+Resizing windows is a pain with the mouse. Default bindings exist for increasing
+the window's size horizontally (C-{ and C-}) but there are none for doing it
+vertically. The following remapps the functions to do resizing (horizontally and
+vertically) to 'C-x <arrow>' for consistency. This overwrites the two key
+default key bindings: C-x <left> and C-x <right> which run the commands 
+`previous-buffer` and `next-buffer` respectively.
+
+Left and down are shrink, right and up are enlarge.
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-x <left>")  'shrink-window-horizontally)
+(global-set-key (kbd "C-x <right>") 'enlarge-window-horizontally)
+(global-set-key (kbd "C-x <down>")  'shrink-window)
+(global-set-key (kbd "C-x <up>")    'enlarge-window)
+
+;; Repeat for keys where CTRL is kept pressed to prevent accidentally holding
+;; CTRL and calling a different command function.
+(global-set-key (kbd "C-x <C-left>")  'shrink-window-horizontally)
+(global-set-key (kbd "C-x <C-right>") 'enlarge-window-horizontally)
+(global-set-key (kbd "C-x <C-down>")  'shrink-window)
+(global-set-key (kbd "C-x <C-up>")    'enlarge-window)
+#+end_src
+
+**** Winner mode
+
+Winner mode allows you to undo/redo changes to window changes in Emacs.
+
+Turning it on conflicts with C-c <left> and C-c <right>. Deal with conflict
+and enable in future. Its benefits are too good to ignore!
+
+
+#+BEGIN_SRC emacs-lisp
+
+;; (global-set-key (kbd "")  'winner-mode)
+;; (global-set-key (kbd "C-v <left>")  'winner-redo)
+;; (global-set-key (kbd "")  'winner-undo)
+
+#+END_SRC
+
+** Frames
+See http://www.emacswiki.org/emacs/FrameMove on how to intgrate framemove into
+windmove.
+
+** Scratch Buffer
+Convenient package to create =*scratch*= buffers that are based on the
+current buffer's major mode. This is more convienent than manually
+creating a buffer to do some scratch work or reusing the initial
+=*scratch*= buffer.
+
+#+begin_src emacs-lisp
+(use-package scratch
+  :ensure t)
+#+end_src
+
+* Formatting and Display 
+** Existing Bindings
+| Keys    | Command        | Description                                   |
+| M-q     | fill-paragraph | Wraps lines in the given paragraph around the |
+|         |                | `column-fill` variable column.                |
+| C-u M-q | fill-paragraph | Wraps text in paragraph but it is justified.  |
+|         |                |                                               |
+** Custom Bindings
+
+*** Visual line mode
+
+Visual line mode (VLM) is useful when dealing with lines which are longer than
+the window can display in a line of its own. Usually when this occurs an arrow
+is placed on the line to highlight that. Also the behaviour is not very nice
+e.g. killing the line means killing the whole line (which could be 1000's lines
+below the actual visual line we want to kill).
+
+By enabling VLM the behaviour is much more friendlier - we still want lines
+which cannot be displayed on a single window line to have the arrow in the
+margin but we want normal line operations to work on the visual line.
+VLM does this.
+
+#+BEGIN_SRC emacs-lisp
+(global-visual-line-mode)
+(setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+(diminish 'visual-line-mode)  ;; Remove 'vl Wrap' from mode line.
+#+END_SRC
+
+
+*** auto-fill-mode
+
+#+BEGIN_SRC emacs-lisp
+
+;; auto-fill-mode is a minor mode which automatically wraps lines after the
+;; `fill-column` variable is reached. We set it when a text mode is opened
+;; so that it does not affect the shells/terminals.
+(global-set-key (kbd "C-c q") 'auto-fill-mode)
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
+(setq fill-column 80)
+
+#+END_SRC
 * Themes
 
 ** Custom Theme Directory 
@@ -30,7 +314,7 @@ directory first---see `custom-theme-load-path'.
 #+END_SRC
 
 * Sane Defaults
-
+  
 
 #+BEGIN_SRC emacs-lisp
 
@@ -38,44 +322,42 @@ directory first---see `custom-theme-load-path'.
 (setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
 (setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save-list/" t)))
 
-;; Do not use tabs - use spaces instead. 
-(setq-default indent-tabs-mode nil) 
+(setq-default indent-tabs-mode nil) ;; Do not use tabs - use spaces instead. 
+(setq-default indicate-empty-lines t) ;; Indicate lines at bottom of file which are empty like vi.
 
-;; Always confirm when exiting
-(setq confirm-kill-emacs 'y-or-n-p) 
+(setq confirm-kill-emacs 'y-or-n-p) ;; Always confirm when exiting
+(setq uniquify-buffer-name-style 'forward) ;; If two buffers with same name open, uniquify names.
 
-;; Highlight pairs of parens
-(show-paren-mode 1) 
-
-;; Automatically introduces closing parenthesis, brackets, braces, etc.
-(electric-pair-mode 1) 
-
+(show-paren-mode 1) ;; Highlight pairs of parens
+(electric-pair-mode 1) ;; Automatically introduces closing parenthesis, brackets, braces, etc.
+(delete-selection-mode t) ;; Delete the region when typing instead of only moving cursor.
+(column-number-mode t) ;; Always show column number in modeline.
 
 #+END_SRC
 
-* Customise Settings
-
-Set up the customize file to its own separate file, instead of having emacs
-save customise settings in init.el.
-
-#+begin_src emacs-lisp
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-(load custom-file)
-#+end_src
-
 * Org Mode
+
+** Org setup
+
+#+BEGIN_SRC emacs-lisp
+
+;; For org mode allow using shift to highlight text
+;; (setq org-support-shift-select 'always) 
+
+#+END_SRC
+
+
+** Org babel/source blocks
+
+Pressing '<s TAB' in org mode automatically inserts a 'source code block'.
 
 #+BEGIN_SRC emacs-lisp
 
 ;; Enable syntax highlighting for source code blocks within an org mode file.
 (setq org-src-fontify-natively t)
 
-;; For org mode allow using shift to highlight text
-;; (setq org-support-shift-select 'always) 
-
-
 #+END_SRC
-* M-x eshell, M-x shell, M-x term, M-x ansi-term
+* Eshell, Shell, Term, and Ansi-Term
 ** Opening a shell/terminal
 
 We create two functions: 
@@ -133,17 +415,90 @@ We create two functions:
 
 #+END_SRC
 
-
-
-* Frames, Windows, Buffers
-** Switching
+* LaTeX
 
 #+BEGIN_SRC emacs-lisp
-
-;; Move between windows: ;;
-(global-set-key (kbd "C-c <left>")  'windmove-left)
-(global-set-key (kbd "C-c <right>") 'windmove-right)
-(global-set-key (kbd "C-c <up>")    'windmove-up)
-(global-set-key (kbd "C-c <down>")  'windmove-down)
-
+;; Enable flyspell mode by default when editing LaTex.
+(add-hook 'LaTeX-mode-hook 'turn-on-flyspell) 
 #+END_SRC
+
+* Languages
+** Python
+** Haskell
+* ELPA, MELPA Packages
+  
+This section uses the 'use-package' package to configure the packages
+downloaded from ELPA/MEPLA etc.
+
+** Ace Jump Mode
+
+A quick way to jump around text in buffers.
+
+Demos:
+- https://dl.dropboxusercontent.com/u/3254819/AceJumpModeDemo/AceJumpDemo.htm
+- [[http://emacsrocks.com/e10.html][See Emacs Rocks Episode 10 for a screencast.]]
+
+#+begin_src emacs-lisp
+(use-package ace-jump-mode
+  :ensure t
+  :diminish ace-jump-mode
+  :commands ace-jump-mode
+  :bind ("C-S-s" . ace-jump-mode))  ;; CTRL-SHIFT-s together
+#+end_src
+
+** Helm
+
+Helm is incremental completion and selection narrowing framework for Emacs. It
+will help steer you in the right direction when you're looking for stuff in
+Emacs (like buffers, files, etc).
+
+It makes buffers interactive and much nicer to deal with (among other things)!
+
+#+BEGIN_SRC emacs-lisp
+(use-package helm
+  :ensure t
+  :diminish helm-mode
+  :init (helm-mode)
+  :bind (("M-y" . helm-show-kill-ring)
+         ("C-x r b" . helm-bookmarks)
+        ;; ("C-x C-b" . helm-buffers-list)
+        )
+)
+
+;; From other config
+  ;; :init (progn
+  ;;         (require 'helm-config)
+  ;;         (use-package helm-projectile
+  ;;           :ensure t
+  ;;           :commands helm-projectile
+  ;;           :bind ("C-c p h" . helm-projectile))
+  ;;         (use-package helm-ag :ensure t)
+  ;;         (setq helm-locate-command "mdfind -interpret -name %s %s"
+  ;;               helm-ff-newfile-prompt-p helm
+  ;;               nil-M-x-fuzzy-match t)
+  ;;         (helm-mode))
+  ;; :bind (("C-c h" . helm-command-prefix)
+  ;;        ("C-x b" . helm-mini)
+  ;;        ("C-`" . helm-resume)
+  ;;        ("M-x" . helm-M-x)
+  ;;        ("C-x C-f" . helm-find-files))
+#+END_SRC
+
+*** Helm Swoop
+
+Helm swoop is a nice replacement for M-x occur (M-s o).
+
+
+#+BEGIN_SRC emacs-lisp
+(use-package helm-swoop
+  :ensure t
+  :bind(("M-s o" . helm-swoop)     
+        ("M-s M-o" . helm-swoop)
+       )
+)
+#+END_SRC
+
+
+
+
+** 

@@ -1,15 +1,9 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;; Initialisation (Start) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Turn off mouse interface early in startup to avoid momentary display
-(when window-system
-  (menu-bar-mode -1)    ;; Menu bar - file, edit, etc.
-  (tool-bar-mode -1)    ;; Tool bar - buttons under menu bar.
-  (scroll-bar-mode -1)  ;; Scroll bar on side of buffers
-  (tooltip-mode -1))    ;; On: Help text as popup/Off: as text in minibuffer.
-
-;; Don't show the tutorial startup page.
-(setq inhibit-startup-message t) 
+;; Emacs outputs e-lisp when it is used to custom set variables and options.
+;; The following sets the 'custom-file' variable to be distinct from the
+;; 'init.el'/'.emacs.el' file. It also loads the existing custom settings.
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(load custom-file)
 
 ;; package.el comes bundles with emacs24+. 
 (require 'package) 
@@ -27,28 +21,42 @@
 ;; than wait for emacs to do it after processing the init file.
 (package-initialize)  ;; For loading packages explicitly in the init file.
 
-;; 'use-package' is used to isolate and configure different packages in a 
-;; friendly and tidy manner. It is mandatory for this emacs config.
-;; The following, checks if it is installed - if it isn't it installs it.
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
+;; The following packages are mandatory for this emacs config. The following
+;; checks whether they are installed and if they aren't installs them.
+;; (unless (package-installed-p 'use-package) ;; use-package used to isolate 
+;;  (package-refresh-contents)               ;; and configure packages in
+;;  (package-install 'use-package))          ;; a friendly and tidy manner. 
 
-;; ob-tangle allows you to extract source code from org-mode files
+;; (unless (package-installed-p 'bind-key) 
+;;  (package-refresh-contents)            
+;;  (package-install 'use-package))       
+
+;; (unless (package-installed-p 'diminish) ;; For reducing the minor modes which
+;;  (package-refresh-contents)            ;; appear in the mode line.
+;;  (package-install 'use-package)) 
+
+;; use-package is not needed at runtime so evaluate it at compile time to reduce
+;; emacs load time.
+(eval-when-compile (require 'use-package))
+(require 'diminish) ;; To diminish minor modes clogging mode line.
+(require 'bind-key) ;; For easy binding of keys.
+
+;; Rather than create a spaghetti mess of e-lisp in this one 'init.el' file, we
+;; delegate the organisation of the customisation source code to an org-mode
+;; file which contains the e-lisp in source blocks.  ob-tangle allows you to
+;; extract source code from org-mode files
 (require 'ob-tangle)  
 
-;; (org-babel-load-file <file>) loads the Emacs Lisp source code blocks in the given Org-mode <file>.
+;; (org-babel-load-file <file>) loads the Emacs Lisp source code
+;; blocks in the given Org-mode <file>.
 (org-babel-load-file (concat user-emacs-directory "config.org"))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;; Initialisation (End) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;; Initialise Packages (Start) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
+;;;;;;;;;;;;;;;;;; To be moved to conig.org file ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Automatically byte compile everything that needs byte compiling.
 ;; Needs to be put after changes to the load path.
@@ -57,20 +65,9 @@
 (require 'column-marker)
 (require 'igrep) ;; 'M-x fgrep-find' useful for finding occurences of a string in a directory.
 
-
-
 (elpy-enable) ;; Always initialise elpy mode (for Python)
 (define-key yas-minor-mode-map (kbd "C-c k") 'yas-expand) ;; Fixing a key binding bug in elpy
 (define-key global-map (kbd "C-c o") 'iedit-mode) ;; Fixing another key binding elpy bug in iedit mode
-
-
-
-;;;;;;;;;;;;;;;;;;;;; Initialise Packages (End) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;; Setting stock variables (Start) ;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 (setq custom-safe-themes t)
@@ -78,41 +75,11 @@
 
 
 ;; (global-linum-mode 1) ;; Add line numbers to side of emacs.
-
-
-
 ;; (which-function-mode 1) ;; Shows which function the point is in.
-
-;;;;;;;;;;;;;;;;;;;;; Setting stock variables (End) ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;; Global Key Bindings (Start) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(global-set-key (kbd "C-x C-b") 'helm-buffers-list)
-(global-set-key (kbd "C-x r b") 'helm-bookmarks)
-(global-set-key (kbd "C-x m") 'helm-M-x)
-(global-set-key (kbd "M-y") 'helm-show-kill-ring)
-(global-set-key (kbd "M-s o") 'helm-swoop)
-;; (global-set-key (kbd "C-x C-f") 'helm-find-files) ;; Prefer normal behaviour.
 
 (global-set-key [f8] 'neotree-toggle)
 
-
-
-
-;;;;;;;;;;;;;;;;;;;;; Global Key Bindings (End) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-(add-hook 'LaTeX-mode-hook #'turn-on-flyspell) ;; Enable flyspell mode by default when editing LaTex.
-
-
-
-
-(add-hook 'ansi-termhook 'auto-fill-mode)
 
