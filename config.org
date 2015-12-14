@@ -1,11 +1,12 @@
 
 #+TITLE: Emacs Configuration File
 #+AUTHOR: Vikram Bakshi
-
+#+STARTUP: inlineimages
 
 Key binding explanations:
 - C-c <C-left> - Means CTRL must be pressed for both.
 
+LOOK UP AND BIND WINNER MODE
 
 * Use-package notes
 ** Use-package
@@ -143,7 +144,22 @@ they are:
 (setq dired-listing-switches "-lah")
 #+END_SRC
 
+* Minibuffer
 
+Set the colour of the minibuffer prompt to green for better readability.
+#+BEGIN_SRC emacs-lisp
+ (custom-set-faces  
+  '(minibuffer-prompt ((t (:foreground "green"))))  
+ )  
+#+END_SRC
+** Powerline
+
+#+begin_src emacs-lisp
+(use-package powerline
+  :ensure t
+  :init (powerline-center-theme)
+)
+#+end_src
 
 * Buffers, Windows, Frames, and Scratch Buffer
 ** Buffers
@@ -342,7 +358,10 @@ directory first---see `custom-theme-load-path'.
 (setq-default indicate-empty-lines t) ;; Indicate lines at bottom of file which are empty like vi.
 
 (setq confirm-kill-emacs 'y-or-n-p) ;; Always confirm when exiting
-(setq uniquify-buffer-name-style 'forward) ;; If two buffers with same name open, uniquify names.
+
+(setq                                     ;; If two buffers with same name open, uniquify names.
+ uniquify-buffer-name-style 'post-forward ;; Does not work for some reason.
+ uniquify-separator         ":")
 
 (show-paren-mode 1) ;; Highlight pairs of parens
 (electric-pair-mode 1) ;; Automatically introduces closing parenthesis, brackets, braces, etc.
@@ -362,6 +381,23 @@ directory first---see `custom-theme-load-path'.
 
 #+END_SRC
 
+** Org images
+
+The variable `org-startup-with-inline-images` can be set globally to
+show inline images when loading a new Org file.
+
+#+BEGIN_SRC emacs-lisp
+(setq org-startup-with-inline-images t)
+#+END_SRC
+
+Alternatively, you can set inline colours locally on a perfile basis by adding 
+one of the following lines anywhere in the buffer:
+
+`#+STARTUP: inlineimages`
+`#+STARTUP: noinlineimages`
+
+You can also toggle inline images with:
+C-c C-x C-v     (org-toggle-inline-images)
 
 ** Org babel/source blocks
 
@@ -374,6 +410,103 @@ Pressing '<s TAB' in org mode automatically inserts a 'source code block'.
 
 #+END_SRC
 * Eshell, Shell, Term, and Ansi-Term
+** Shell autocompletion
+
+See: http://stackoverflow.com/questions/163591/bash-autocompletion-in-emacs-shell-mode
+
+In the emacs shell, it's actually emacs doing the auto-completion, not bash. If
+the shell and emacs are out of sync (e.g. by using pushd, popd or some bash user
+function that changes the shell's current directory), then auto-completion stops
+working.
+
+To fix this, just type 'dirs' into the shell and things get back in sync.
+Alternatively there is the following keybinding:
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key "\M-\r" 'shell-resync-dirs) ;; Alt + return
+#+END_SRC
+
+*** Bash Completion Package
+
+See: https://github.com/szermatt/emacs-bash-completion
+
+Package allows for bash completition in normal shell.
+
+#+begin_src emacs-lisp
+(use-package bash-completion
+  :ensure t
+)  
+
+;; Load package at start up.
+(require 'bash-completion)
+(bash-completion-setup)
+#+end_src
+
+** Colours
+Resources for section:
+- http://my-side-projects.blogspot.co.uk/2014/09/change-colour-of-emacs-shell-prompt-and.html
+- http://stackoverflow.com/questions/25819034/colors-in-emacs-shell-prompt
+
+
+We want to be able to have the shell show colours like a normal terminal.
+To deal with colours in the shell we need to deal with comint-mode. ComintMode
+is for making shell or repl like buffers in which to interact with an external
+process.
+
+#+BEGIN_SRC emacs-lisp
+  
+  ;; Add color to a shell running in emacs ‘M-x shell’
+  (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
+  (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+  (add-to-list 'comint-output-filter-functions 'ansi-color-process-output)
+  
+  ;; Define the color vector. These are used for SGR (Select Graphic
+  ;; Rendition) control sequences determining a color.
+  (setq ansi-color-names-vector
+    ["black" 
+     "#FF0000"         ;; "red" 
+     "green" 
+     "yellow" 
+     "PaleBlue" 
+     "magenta" 
+     "cyan" 
+     "white"]
+  )
+#+END_SRC
+
+Set specific colours for the terminal and shell.
+
+#+BEGIN_SRC emacs-lisp
+(custom-set-faces
+ ;; Terminal Colours
+ '(term-color-blue ((t (:background "#008B8B" :foreground "#008B8B"))))
+ '(term-color-red ((t (:background "tomato" :foreground "tomato"))))
+ ;; Shell Colours
+
+)
+#+END_SRC
+
+*** Shell Prompt Colour
+
+Run the command M-x list-faces-display and open the comint-highlight-prompt option.
+line. Make sure that the comint-highlight-prompt face is NOT set to inherit
+from anything. In my case it was set to inherit from the minibuffer
+prompt - which sets things such as :weight, :foreground
+and :background.  Removing the inheritance will prevent the colour
+for the prompt from being overridden by the comint-highlight-prompt face.
+
+#+BEGIN_SRC emacs-lisp
+(set-face-attribute 'comint-highlight-prompt nil :inherit nil)
+
+(custom-set-faces
+  ;; Set the prompt to be green
+  '(comint-highlight-prompt ((t (:foreground "green"))))
+)
+
+#+END_SRC
+
+
+
 ** Opening a shell/terminal
 
 We create two functions: 
@@ -431,6 +564,18 @@ We create two functions:
 
 #+END_SRC
 
+** M-x shell
+
+* Colours (General)
+M-x commands to use to understand colours:
+
+| Command                 | Description                                    |
+| M-x list-colors-display | Lists the colour names available to use to set |
+|                         | colours of different `attributes`.             |
+| M-x list-faces-display  | Lists the `attributes` available to set the    |
+|                         | colours to one of the `list-colors-display`.   |
+
+
 * LaTeX
 
 #+BEGIN_SRC emacs-lisp
@@ -458,7 +603,7 @@ For starters we need to ensure we have Haskell mode installed.
 #+end_src
 
 
-* ELPA, MELPA Packages
+* Misc. ELPA, MELPA Packages
   
 This section uses the 'use-package' package to configure the packages
 downloaded from ELPA/MEPLA etc.
@@ -515,6 +660,7 @@ It makes buffers interactive and much nicer to deal with (among other things)!
   ;;        ("C-`" . helm-resume)
   ;;        ("M-x" . helm-M-x)
   ;;        ("C-x C-f" . helm-find-files))
+
 #+END_SRC
 
 *** Helm Swoop
@@ -533,5 +679,30 @@ Helm swoop is a nice replacement for M-x occur (M-s o).
 
 
 
+** Undo Tree
 
-** 
+Undo tree allows you to visually view the undos which you have
+done in your buffer. Useful keybindings once enabled globally are:
+
+| Key      | Command                                 | Description                            |
+| C-_  C-/ | undo-tree-undo                          | Undo changes.                          |
+| M-_  C-? | undo-tree-redo                          | Redo changes.                          |
+| C-x u    | undo-tree-visualize                     | Visualize the undo tree.               |
+| C-x r u  | undo-tree-save-state-to-register        | Save current buffer state to register. |
+| C-x r U  | undo-tree-restore-state-from-register   | Restore buffer state from register.    |
+| <up>     | undo-tree-visualize-undo                | Undo changes.                          |
+| <down>   | undo-tree-visualize-undo                | Undo changes.                          |
+| <left>   | undo-tree-visualize-switch-branch-left  | Switch to previous undo-tree branch.   |
+| <right>  | undo-tree-visualize-switch-branch-right | Switch to next undo-tree branch.       |
+| t        | undo-tree-visualizer-toggle-timestamps  | Toggle display of time-stamps.         |
+| q        | undo-tree-visualizer-quit               | Quit undo-tree-visualizer.             |
+
+
+#+BEGIN_SRC emacs-lisp
+(use-package undo-tree
+  :ensure t
+  :init 
+   (global-undo-tree-mode)
+   (setq undo-tree-visualizer-diff t)  
+)
+#+END_SRC
