@@ -7,6 +7,9 @@ Key binding explanations:
 - C-c <C-left> - Means CTRL must be pressed for both.
 
 LOOK UP AND BIND WINNER MODE
+LOOK UP AND ENABLE FLEX IDO MODE:
+  - https://github.com/lewang/flx
+  - 09 Buffers, Windows and IDO Mode
 
 * Use-package notes
 ** Use-package
@@ -104,7 +107,7 @@ looking initialisation.
 
 ;; Turn off mouse interface early in startup to avoid momentary display
 (when window-system
-  (menu-bar-mode -1)    ;; Menu bar - file, edit, etc.
+  ;; (menu-bar-mode -1)    ;; Menu bar - file, edit, etc.
   (tool-bar-mode -1)    ;; Tool bar - buttons under menu bar.
   (scroll-bar-mode -1)  ;; Scroll bar on side of buffers
   ;; (tooltip-mode -1)    ;; On: Help text as popup/Off: as text in minibuffer.
@@ -131,6 +134,16 @@ recursively add subdirectories.
 
 #+END_SRC
 
+* Personal Minor Mode
+Create my own minor mode to contain my own functionality.
+See 
+- tutsplus - Venture into Emacs/02 Usage/12 Major and Minor Modes
+- tutsplus - Venture into Emacs/02 Usage/13 Customizations
+
+
+  
+** Custom Minor Mode Functions
+   
 * Dired Mode
 
 We can give the options that dired mode uses when it calls ls so that
@@ -139,9 +152,16 @@ they are:
 - l: Use the long listing format.
 - a: Show all files including hidden ones.
 - h: Print sizes in human readable format (K, M G etc.)
+- F: Append an indicator onto relevant files/directories:
+  - / is a directory
+  - @ is a symlink
+  - | is a named pipe (fifo)
+  - = is a socket.
+  - * for executable files
+  - > is for a "door" -- a file type currently not implemented for Linux, but supported on Sun/Solaris.
 
 #+BEGIN_SRC emacs-lisp
-(setq dired-listing-switches "-lah")
+(setq dired-listing-switches "-lahF")
 #+END_SRC
 
 * Minibuffer
@@ -297,39 +317,46 @@ creating a buffer to do some scratch work or reusing the initial
 | C-u M-q | fill-paragraph | Wraps text in paragraph but it is justified.  |
 |         |                |                                               |
 ** Custom Bindings
-
 *** Visual line mode
 
-Visual line mode (VLM) is useful when dealing with lines which are longer than
-the window can display in a line of its own. Usually when this occurs an arrow
-is placed on the line to highlight that. Also the behaviour is not very nice
-e.g. killing the line means killing the whole line (which could be 1000's lines
-below the actual visual line we want to kill).
+Visual line mode (VLM) is (sometimes) useful when dealing with lines which are
+longer than the window can display in a line of its own. Usually when this
+occurs an arrow is placed on the line to highlight that. Also the behaviour is
+not very nice e.g. killing the line means killing the whole line (which could be
+1000's lines below the actual visual line we want to kill).
 
-By enabling VLM the behaviour is much more friendlier - we still want lines
-which cannot be displayed on a single window line to have the arrow in the
-margin but we want normal line operations to work on the visual line.
-VLM does this.
+By enabling VLM the behaviour is (sometimes) much more friendlier - we still
+want lines which cannot be displayed on a single window line to have the arrow
+in the margin but we want normal line operations to work on the visual line.
+VLM does this. Other times it is just annoying as you may just want to kill the
+whole line. 
 
 #+BEGIN_SRC emacs-lisp
-(global-visual-line-mode)
-(setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
-(diminish 'visual-line-mode)  ;; Remove 'vl Wrap' from mode line.
+; (global-visual-line-mode)
+; (setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+; (diminish 'visual-line-mode)  ;; Remove 'vl Wrap' from mode line.
 #+END_SRC
-
 
 *** auto-fill-mode
 
-#+BEGIN_SRC emacs-lisp
+auto-fill-mode is a minor mode which automatically wraps lines after the
+`fill-column` variable is reached. We set it when a text mode is opened
+so that it does not affect the shells/terminals.
 
-;; auto-fill-mode is a minor mode which automatically wraps lines after the
-;; `fill-column` variable is reached. We set it when a text mode is opened
-;; so that it does not affect the shells/terminals.
+#+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-c q") 'auto-fill-mode)
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
-(setq fill-column 80)
-
+(setq fill-column 80)  ; This is a buffer local change only (not global)
 #+END_SRC
+
+Setting the fill-column variable is a buffer local change and so we
+need to set it by using a hook for the major mode we are interested in. 
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'text-mode-hook (lambda () (set-fill-column 95)))
+(add-hook 'org-mode-hook (lambda () (set-fill-column 95)))
+#+END_SRC
+
 * Themes
 
 ** Custom Theme Directory 
@@ -409,6 +436,39 @@ Pressing '<s TAB' in org mode automatically inserts a 'source code block'.
 (setq org-src-fontify-natively t)
 
 #+END_SRC
+
+* Text Mode
+
+** Org Table Minor Mode
+We want to create org tables easily in text files without having to
+change the major mode to org mode. So if we are in a text file, open
+org table minor mode so we can do this.
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'text-mode-hook 'orgtbl-mode)
+#+END_SRC
+* Searching and CUA Mode
+** Searching
+The library 'igrep' provides useful searching functionality such as 'fgrep-find'.
+
+#+BEGIN_SRC emacs-lisp
+;; 'M-x fgrep-find' useful for finding occurences of a string in a directory.
+(require 'igrep) 
+
+; Define keybinding so can be pressed whether CTRL is held down or not.
+(global-set-key (kbd "C-x g") 'fgrep-find)
+(global-set-key (kbd "C-x C-g") 'fgrep-find)
+#+END_SRC
+
+** CUA Mode
+
+CUA mode rectangles are very useful.
+
+#+BEGIN_SRC emacs-lisp
+(setq cua-auto-tabify-rectangles nil) ;; Don't tabify after rectangle commands
+(transient-mark-mode 1) ;; No region when it is not highlighted
+#+END_SRC
+
 * Eshell, Shell, Term, and Ansi-Term
 ** Shell autocompletion
 
@@ -440,6 +500,9 @@ Package allows for bash completition in normal shell.
 ;; Load package at start up.
 (require 'bash-completion)
 (bash-completion-setup)
+
+; Turn package off: 
+; (setq bash-completion-enabled nil)
 #+end_src
 
 ** Colours
@@ -575,9 +638,32 @@ M-x commands to use to understand colours:
 | M-x list-faces-display  | Lists the `attributes` available to set the    |
 |                         | colours to one of the `list-colors-display`.   |
 
+* Flyspell/ISpell
+** Default Dictionary
+We want the default dictionary to be British english rather than American.
 
-* LaTeX
+#+BEGIN_SRC emacs-lisp
+(setq ispell-dictionary "british")
+#+END_SRC
+** Major Modes 
+We want to turn flyspell mode on for the following major modes:
 
+#+BEGIN_SRC emacs-lisp
+(add-hook 'org-mode-hook 'flyspell-mode)
+#+END_SRC
+
+
+* Unicode and LaTeX
+** Unicode
+
+The function 'insert-char' allows you to insert unicode characters
+based on their hex code.
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-c u") 'insert-char) ; u for unicode
+#+END_SRC
+
+** Latex
 #+BEGIN_SRC emacs-lisp
 ;; Enable flyspell mode by default when editing LaTex.
 (add-hook 'LaTeX-mode-hook 'turn-on-flyspell) 
@@ -585,6 +671,22 @@ M-x commands to use to understand colours:
 
 * Languages
 ** Python
+
+#+begin_src emacs-lisp
+(use-package elpy
+  :ensure t
+  :config
+  (elpy-enable)
+  (define-key yas-minor-mode-map (kbd "C-c k") 'yas-expand) ;; Fixing a key binding bug in elpy
+  (define-key global-map (kbd "C-c o") 'iedit-mode) ;; Fixing another key binding elpy bug in iedit mode
+
+)
+
+
+
+#+end_src
+
+
 ** Haskell
 
 The following configuration assumes that the system has the following
@@ -602,7 +704,69 @@ For starters we need to ensure we have Haskell mode installed.
 )
 #+end_src
 
+* Ido and Finding Files
+** IDO
+#+begin_src emacs-lisp
+(use-package ido
+  :init
+  (progn
+    (setq ido-enable-flex-matching t)
+    (setq ido-everywhere t)
+    (ido-mode t)
+    ;; (use-package ido-ubiquitous
+    ;;   :ensure t
+    ;;   :init (ido-ubiquitous-mode))
+    (use-package ido-vertical-mode
+      :ensure t
+      :init (ido-vertical-mode 1)
+      (setq ido-vertical-define-keys 'C-n-and-C-p-only))))
+#+end_src
 
+When switching buffers in multiple frames, by default, if an existing
+frame has the buffer open, ido will just move the cursor to that
+buffer. We don't want that functionality so we change the default
+buffer method to change in the selected window instead.
+
+#+BEGIN_SRC emacs-lisp
+(setq ido-default-buffer-method 'selected-window)
+#+END_SRC
+
+** Recent Files
+
+#+BEGIN_SRC emacs-lisp
+(require 'recentf)
+(recentf-mode 1)
+(setq recentf-max-menu-items 25)
+(global-set-key (kbd "C-x C-r") 'recentf-open-files)
+#+END_SRC
+* Built In Packages
+** Save Place
+Save place allows you to reopen a buffer and have the point at the
+position it was when the buffer was closed automatically.
+
+#+BEGIN_SRC emacs-lisp
+(require 'saveplace)
+(setq save-place-file (concat user-emacs-directory ".saveplace.el"))
+(setq-default save-place t)
+#+END_SRC
+
+** Electric Indent Mode
+Electric indent mode automatically indents your next line when hitting return.
+This can be useful for when in python you just want to continue the indentation
+on the next line at the same level.
+
+Although it works well most of the time, it has known issues with certain modes
+e.g. ReST mode (rst-mode). See:
+- http://emacsredux.com/blog/2013/03/29/automatic-electric-indentation/
+- http://docutils.sourceforge.net/docs/user/emacs.html
+- http://stackoverflow.com/questions/21182550/how-to-turn-of-electric-indent-mode-for-specific-major-mode
+
+After playing with it, I find it more annoying than useful. Use 'C-j' instead.
+
+#+BEGIN_SRC emacs-lisp
+; (electric-indent-mode t)
+#+END_SRC
+ 
 * Misc. ELPA, MELPA Packages
   
 This section uses the 'use-package' package to configure the packages
@@ -623,6 +787,19 @@ Demos:
   :commands ace-jump-mode
   :bind ("C-S-s" . ace-jump-mode))  ;; CTRL-SHIFT-s together
 #+end_src
+
+** Expand Region
+Expands a region by semantic units e.g. for (setq alphabet-start "abc def") and the point being
+somewhere within the "abc def" it would expand region to be in whole string, then to contents
+of the sexp setq alphabet-start "abc def" and finally to the entire sexp.
+
+#+begin_src emacs-lisp
+(use-package expand-region
+  :ensure t
+;  :diminish ace-jump-mode
+  :bind ("C-=" . er/expand-region))
+#+end_src
+
 
 ** Helm
 
@@ -678,6 +855,46 @@ Helm swoop is a nice replacement for M-x occur (M-s o).
 #+END_SRC
 
 
+** Magit
+
+Interface for git projects. 
+
+#+begin_src emacs-lisp
+;; (use-package magit
+;;   :ensure t
+;;   :bind ("C-c g" . magit-status)
+;;   :config
+;;   (define-key magit-status-mode-map (kbd "q") 'magit-quit-session))
+#+end_src
+
+
+** Multiple Cursors
+
+We'll also need to ~(require 'multiple-cusors)~ because of [[https://github.com/magnars/multiple-cursors.el/issues/105][an autoload issue]].
+
+Multiple-cursors uses two lists of commands to know what to do: the run-once
+list and the run-for-all list. It comes with a set of defaults, but it would be
+beyond silly to try and include all the known Emacs commands.  
+
+So that's why multiple-cursors occasionally asks what to do about a command. It
+will then remember your choice by saving it in ~/.emacs.d/.mc-lists.el. You can
+change the location with: (setq mc/list-file "/my/preferred/file") - do this
+before requiring multiple cursors.
+
+#+begin_src emacs-lisp
+(use-package multiple-cursors
+  :ensure t
+  :init 
+  ; (setq mc/list-file "/my/preferred/file")
+  (require 'multiple-cursors)
+  :bind (("C-S-c C-S-c" . mc/edit-lines)
+         ("C->"         . mc/mark-next-like-this)
+         ("C-<"         . mc/mark-previous-like-this)
+         ("C-c C-<"     . mc/mark-all-like-this)
+         ("C-!"         . mc/mark-next-symbol-like-this)
+         ("C-S-d"       . mc/mark-all-dwim)))
+#+end_src
+
 
 ** Undo Tree
 
@@ -704,5 +921,15 @@ done in your buffer. Useful keybindings once enabled globally are:
   :init 
    (global-undo-tree-mode)
    (setq undo-tree-visualizer-diff t)  
+)
+#+END_SRC
+** YAML Mode
+
+YAML is a human readable data serialization format. Sometimes
+used for config files (Haskell Stack uses it a lot).
+
+#+BEGIN_SRC emacs-lisp
+(use-package yaml-mode
+  :ensure t
 )
 #+END_SRC
