@@ -56,6 +56,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
+
 ;;;;;;;;;;;;;;;;;; To be moved to conig.org file ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Automatically byte compile everything that needs byte compiling.
@@ -63,11 +64,6 @@
 ;; (byte-recompile-directory (expand-file-name "~/.emacs.d") 0)
 
 (require 'column-marker)
-(require 'igrep) ;; 'M-x fgrep-find' useful for finding occurences of a string in a directory.
-
-(elpy-enable) ;; Always initialise elpy mode (for Python)
-(define-key yas-minor-mode-map (kbd "C-c k") 'yas-expand) ;; Fixing a key binding bug in elpy
-(define-key global-map (kbd "C-c o") 'iedit-mode) ;; Fixing another key binding elpy bug in iedit mode
 
 
 (setq custom-safe-themes t)
@@ -80,6 +76,39 @@
 (global-set-key [f8] 'neotree-toggle)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; testing cua mode functions (delete once complete)
+
+
+(defun cua-activate-plus-set-rectangle-mark()
+  "If CUA mode not activated, activates it then runs cua-set-rectangle-mark.
+   If it is active, just runs cua-set-rectangle-mark. "
+   (interactive)
+
+   ; After emacs 23.2: no arg to minor mode will turn on. Arg of nil will also turn on.
+   (cua-mode) ; Make sure cua-mode is on 
+   (cua-set-rectangle-mark))
+
+;(bind-key "<f6>"  'cua-activate-plus-set-rectangle-mark)
+;; 
+(global-set-key (kbd "<f6>") 'cua-activate-plus-set-rectangle-mark)
+
+(defun cua-mode-off()
+  "Cancels any open active region/rectangle and turns CUA mode off"
+  (interactive)
+  (cua-cancel)
+  (setq cua-mode nil))
+ 
+(global-set-key (kbd "<f5>") 'cua-mode-off)
+
+
+
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 
