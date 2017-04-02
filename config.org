@@ -426,6 +426,27 @@ one of the following lines anywhere in the buffer:
 You can also toggle inline images with:
 C-c C-x C-v     (org-toggle-inline-images)
 
+*** Setting custom width of images inline and for export
+
+In order to be able to amend the image width displayed inline we need to do two things:
+1. Set org-image-actual-width to nil
+2. Give the image a width attribute
+
+N.B. if no width attribute is given the image will be displayed inline in its entirety without
+scaling i.e. however big it is.
+
+#+BEGIN_SRC emacs-lisp
+  ;; Doing step 1
+  (setq org-image-actual-width nil)
+#+END_SRC
+
+Example of Step 2 when inserting an image:
+
+#+CAPTION: 
+#+NAME:   fig:business_domain_centric_approach_a
+#+ATTR_ORG: :width 100
+[[./Images/business_domain_centric_approach_a.png]]
+
 ** Org babel/source blocks
 
 Pressing '<s TAB' in org mode automatically inserts a 'source code block'.
@@ -434,6 +455,12 @@ Pressing '<s TAB' in org mode automatically inserts a 'source code block'.
 
 ;; Enable syntax highlighting for source code blocks within an org mode file.
 (setq org-src-fontify-natively t)
+
+;; Allow for the evaluation of the following source blocks
+(org-babel-do-load-languages
+ 'org-babel-load-languages 
+  '((emacs-lisp . t)
+    (python . t)))
 
 #+END_SRC
 
@@ -652,7 +679,6 @@ We want to turn flyspell mode on for the following major modes:
 (add-hook 'org-mode-hook 'flyspell-mode)
 #+END_SRC
 
-
 * Unicode and LaTeX
 ** Unicode
 
@@ -686,7 +712,6 @@ based on their hex code.
 
 #+end_src
 
-
 ** Haskell
 
 The following configuration assumes that the system has the following
@@ -703,6 +728,167 @@ For starters we need to ensure we have Haskell mode installed.
   :ensure t
 )
 #+end_src
+
+** Miranda
+
+The following makes use of the Miranda Major Mode script originally found at:
+http://www.iro.umontreal.ca/~lapalme/layout/miranda-mode.el
+
+1. Make sure the miranda-mode.el file is in a directory that is in the load path.
+
+This setting affects those files with a .m extension.
+
+#+BEGIN_SRC emacs-lisp
+(load-file "~/.emacs.d/lisp/miranda-mode.el")
+
+#+END_SRC
+
+** Scala
+
+Taken from: 
+- http://www.troikatech.com/blog/2014/11/26/ensime-and-emacs-as-a-scala-ide
+- http://ensime.github.io/build_tools/sbt/
+
+*Steps for setting up SCALA in emacs:*
+
+1. Grab the package 'ensime'. This automatically installs:
+ - scala-mode
+ - sbt-mode
+
+#+begin_src emacs-lisp
+(use-package ensime
+  :ensure t
+)
+#+end_src
+
+2. Make sure the sbt binary is in the PATH.
+
+3. Add the sbt-ensime plugin to the sbt (scala build tool) config:
+  - File usually found: `~/.sbt/0.13/plugins/plugins.sbt'
+  - Add the following source code to the relevant plugins.sbt file:
+  #+BEGIN_EXAMPLE add_to_plugins_file
+  if (sys.props("java.version").startsWith("1.6"))
+    addSbtPlugin("org.ensime" % "sbt-ensime" % "1.0.0")
+  else
+    addSbtPlugin("org.ensime" % "sbt-ensime" % "1.11.2")
+  #+END_EXAMPLE
+
+4. Navigate to the base directory of a hello world scala application
+ - Run 'sbt'
+ - Run 'sbt compile'
+ - Run 'sbt ensimeConfig'
+
+5. Open a file in the scala project you want to run.
+ - In the emacs line mode at the bottom it will say [ENSIME: Disconnected]
+
+6. Create a connection to ensime
+  - Run `M-x ensime`
+
+7. The first time it will run will take a while - it will update the server.
+  - It will appear `Scala : [<name of directory>]' once connected
+
+
+#+BEGIN_SRC emacs-lisp
+  ;; If you don't set this to nil you will get a message about
+  ;; using snapshot version each time ENSIME connects to the server
+  (setq ensime-startup-snapshot-notification nil)
+#+END_SRC
+
+*** Common errors
+
+*Error: Could not retrieve sbt 0.13.9*
+apt-get install ca-certificates-java
+sudo update-ca-certificates -f 
+
+*Shared Folders*
+You cannot make symlinks between shared folders of a VM and the VM's other filesystem.
+See http://stackoverflow.com/questions/28144833/operation-not-permitted-in-sbt-typesafe-activator-inside-vagrant-synced-folder
+
+
+*You have a different version of scala for ENSIME (2.10.5) and root (2.11.7).*
+[error] You have a different version of scala for ENSIME (2.10.5) and root (2.11.7).
+[error] If this is not what you intended, use either
+[error]   scalaVersion in ThisBuild := "2.11.7"
+[error] in your build.sbt or add
+[error]   ensimeScalaVersion in ThisBuild := "2.11.7"
+[error] to a local ensime.sbt
+[warn] No Java sources detected in /usr/lib/jvm/java-8-openjdk-amd64 (your ENSIME experience will not be as good as it could be.)
+
+In the project's build.sbt file add the line which defines the ensimeScalaVersion:
+
+#+BEGIN_EXAMPLE example_of_adding_ensimeScalaVersion
+name := course.value + "-" + assignment.value
+
+scalaVersion := "2.11.7"
+
+ensimeScalaVersion in ThisBuild := "2.11.7" // For ensime (emacs)
+
+#+END_EXAMPLE
+
+*** Ensime key bindings
+
+REPL
+| C-c C-v z | Launch embedded Scala REPL which is project aware |
+
+Errors
+| C-c C-c e | List all errors and warnings in separate window.  |
+| C-c C-v e | With cursor on error, display error in minibuffer |
+
+** Idris
+
+Configuration assuming you have Idris mode installed as well as the binaries (which are
+available in your path)
+
+#+begin_src emacs-lisp
+(use-package idris-mode
+  :ensure t
+)
+#+end_src
+
+
+*** Features
+
+The currently supported features of idris in emacs (via the compiler) )are:
+- REPL
+- Type checking
+- Processing and displaying of errors
+- Proof mode
+- Case splitting
+- etc.
+
+| Binding        | Function name   | Description                                       |
+|----------------+-----------------+---------------------------------------------------|
+| M-x idris-repl | idris-repl      | Load an idris REPL                                |
+| C-c C-l        | idris-load-file | Loads the current buffer/file into the idris-repl |
+|                |                 |                                                   |
+
+
+
+`M-x idris-repl` provides an interactive repl whose interaction is like a normal terminal repl
+but specifically for emacs.
+
+
+* TRAMP
+
+** docker support
+
+This adds package docker-tramp which offers TRAMP integration for docker containers.
+E.G. you can type:
+
+C-x C-f /docker:user@container:/path/to/file
+
+where
+  user           is the user that you want to use (optional)
+  container      is the id or name of the container
+
+#+begin_src emacs-lisp
+    (use-package docker-tramp
+      :ensure t
+      ; By default it shows the id of the open containers when use type `/docker:`
+      ; This is inconvenient - we would rather show the name so set the variable to true.
+      :init (setq docker-tramp-use-names t))
+#+end_src
+
 
 * Ido and Finding Files
 ** IDO
@@ -800,7 +986,6 @@ of the sexp setq alphabet-start "abc def" and finally to the entire sexp.
   :bind ("C-=" . er/expand-region))
 #+end_src
 
-
 ** Helm
 
 Helm is incremental completion and selection narrowing framework for Emacs. It
@@ -854,7 +1039,6 @@ Helm swoop is a nice replacement for M-x occur (M-s o).
 )
 #+END_SRC
 
-
 ** Magit
 
 Interface for git projects. 
@@ -866,7 +1050,6 @@ Interface for git projects.
 ;;   :config
 ;;   (define-key magit-status-mode-map (kbd "q") 'magit-quit-session))
 #+end_src
-
 
 ** Multiple Cursors
 
@@ -895,7 +1078,6 @@ before requiring multiple cursors.
          ("C-S-d"       . mc/mark-all-dwim)))
 #+end_src
 
-
 ** Undo Tree
 
 Undo tree allows you to visually view the undos which you have
@@ -923,6 +1105,31 @@ done in your buffer. Useful keybindings once enabled globally are:
    (setq undo-tree-visualizer-diff t)  
 )
 #+END_SRC
+** Which Key
+
+which-key is a minor mode for Emacs that displays the key bindings following your currently
+entered incomplete command (a prefix) in a popup. For example, after enabling the minor mode if
+you enter C-x and wait for the default of 1 second the minibuffer will expand with all of the
+available key bindings that follow C-x (or as many as space allows given your settings). This
+includes prefixes like C-x 8 which are shown in a different face.
+
+
+#+BEGIN_SRC emacs-lisp
+(use-package which-key
+  :ensure t
+)
+
+(require 'which-key)
+(which-key-mode)
+(which-key-setup-side-window-right-bottom)
+#+END_SRC
+
+Once a which-key buffer opens you can press C-h and then:
+| n | next page     |
+| p | previous page |
+| u | undo last key stroke |
+
+
 ** YAML Mode
 
 YAML is a human readable data serialization format. Sometimes
@@ -933,3 +1140,4 @@ used for config files (Haskell Stack uses it a lot).
   :ensure t
 )
 #+END_SRC
+
