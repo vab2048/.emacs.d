@@ -30,3 +30,28 @@ essentially the control flow is as follows:
      that file.
 
 That's basically it. 
+
+* Common Problems
+
+** Incompatible .elc files
+
+Using compiled =.elc= files which were compiled for a previous/different version of emacs may
+result in issues.  This is because "packages are all bytecode compiled upon installation, so
+it's not so far fetched that they are bound to a particular version of Emacs after that." So we
+need to make sure the byte compiled files (i.e. .elc) are removed from the .emacs.d folder the
+first time you initialise the config on a new machine.
+
+Steps:
+1. Copy the .emacs.d folder from the old home directory to the new.
+2. Remove the byte compiled files from the .emacs.d directory (example script below)
+
+#+BEGIN_SRC sh
+# To remove the .elc files from the .emacs.d directory
+cd ~/.emacs.d
+find ./ -name "*.elc" -delete
+#+END_SRC
+
+On Windows you can search the .emacs.d folder for "*.elc", sort by file type and delete all entries
+for elc file.
+
+
