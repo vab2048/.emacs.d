@@ -41,6 +41,5 @@ ido.last
 # Ignore the recents list which is persisted for easy access to recent files
 recentf
 
-
 # Ignore Scala's Ensime folder - it is not needed in source control
 ensime/
