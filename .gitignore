@@ -33,3 +33,14 @@ tramp
 
 # Ignore the e-lisp file generated from the (org-babel-load-file) function call.
 config.el
+
+# Ignore the saveplace and ido files which persist your last location in a file for reference
+.saveplace.el
+ido.last
+
+# Ignore the recents list which is persisted for easy access to recent files
+recentf
+
+
+# Ignore Scala's Ensime folder - it is not needed in source control
+ensime/
