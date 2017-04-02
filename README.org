@@ -1,0 +1,32 @@
+#+AUTHOR: vab2048
+#+TITLE: My .emacs.d configuration
+
+This repo contains my (semi) organised .emacs.d configuration. When initialising, Emacs looks
+for:
+
+1. =~/.emacs= (which I do not use)
+2. =~/.emacs.el= (which I do not use)
+3. =~/.emacs.d/init.el= (which is contained in this repo)
+
+I've tried to be organised by using org mode to document everything. There is still some cruft
+left over from before I used a =~.emacs.d= directory and was using a =.emacs= file but
+essentially the control flow is as follows: 
+
+1. =~/.emacs.d/init.el= is loaded
+2. =~/.emacs.d/init.el= contains the following emacs lisp:
+   #+BEGIN_SRC emacs-lisp
+   (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+   (load custom-file)
+   #+END_SRC
+   - ~custom.el~ contains the emacs-lisp that is output when you use emacs' own UI to customise
+     variables. This code just loads that file.
+3. =~/.emacs.d/init.el= also contains the following emacs lisp:
+   #+BEGIN_SRC emacs-lisp
+     ;; load the Emacs Lisp source code blocks in the given Org-mode <file>.
+     (org-babel-load-file (concat user-emacs-directory "config.org"))
+   #+END_SRC
+   - This essentially loads ~config.org~, extracts all source blocks which are labeled as
+     having the language ~emacs-lisp~, puts them into a file, ~config.el~, and runs the code in
+     that file.
+
+That's basically it. 
