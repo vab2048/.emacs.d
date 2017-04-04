@@ -487,11 +487,11 @@ The library 'igrep' provides useful searching functionality such as 'fgrep-find'
   ;; if it is Windows do nothing
   (message "it is windows")      
   ;; if not Windows assume we have the grep binary
-  ((require 'igrep) 
-
-  ;; Define keybinding so can be pressed whether CTRL is held down or not.
-  (global-set-key (kbd "C-x g") 'fgrep-find)
-  (global-set-key (kbd "C-x C-g") 'fgrep-find))
+  (progn
+    (require 'igrep) 
+    ;; Define keybinding so can be pressed whether CTRL is held down or not.
+    (global-set-key (kbd "C-x g") 'fgrep-find)
+    (global-set-key (kbd "C-x C-g") 'fgrep-find))
 )
 #+END_SRC
 
