@@ -480,11 +480,19 @@ The library 'igrep' provides useful searching functionality such as 'fgrep-find'
 
 #+BEGIN_SRC emacs-lisp
 ;; 'M-x fgrep-find' useful for finding occurences of a string in a directory.
-(require 'igrep) 
+;; But it requires grep - so only use it if the OS is not windows
 
-; Define keybinding so can be pressed whether CTRL is held down or not.
-(global-set-key (kbd "C-x g") 'fgrep-find)
-(global-set-key (kbd "C-x C-g") 'fgrep-find)
+;; N.B. in emacs-lisp it is an 'if () then () else ()' construct
+(if (eq system-type 'windows-nt)
+  ;; if it is Windows do nothing
+  (message "it is windows")      
+  ;; if not Windows assume we have the grep binary
+  ((require 'igrep) 
+
+  ;; Define keybinding so can be pressed whether CTRL is held down or not.
+  (global-set-key (kbd "C-x g") 'fgrep-find)
+  (global-set-key (kbd "C-x C-g") 'fgrep-find))
+)
 #+END_SRC
 
 ** CUA Mode
