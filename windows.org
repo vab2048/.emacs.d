@@ -1,0 +1,126 @@
+#+AUTHOR: vab2048
+#+TITLE: Emacs Windows Specific Notes and Configuration
+
+This file contains notes and configurations for when Emacs is loaded on Windows.
+- The file is only loaded if the OS is Windows.
+
+* Intro
+
+Output this to the *Messages* buffer for info.
+
+#+BEGIN_SRC emacs-lisp
+(message "Loading Windows Specific Configuration")
+#+END_SRC
+
+* HTTPS Errors on Windows
+
+See resources:
+- https://www.reddit.com/r/emacs/comments/4qup16/melpa_https_error_windows/
+
+
+*Problem*
+The issue is that when attemping to connect to a https resource on Windows (such as
+https://melpa.org/packages/) you get an error:
+
+#+BEGIN_EXAMPLE example output illustrating the error
+Debugger entered--Lisp error: (error "Could not create connection to melpa.org:443")
+  signal(error ("Could not create connection to melpa.org:443"))
+...
+#+END_EXAMPLE
+
+
+
+*Solution*
+Go to the ftp mirror for emacs (http://ftpmirror.gnu.org/emacs/) and download the dependencies
+zip for the correct version of emacs. Unzip it in your emacs directory so that the dependencies
+are present for Emacs.
+
+
+*Explanation*
+You need the GnuTLS DLL on Windows when using https. This is not included in the normal emacs
+build for Windows so you need to download the dependencies and extract them over the emacs
+directory on Windows where it is installed.
+
+* TRAMP on Windows
+
+See resources:
+- http://stackoverflow.com/questions/1095172/emacs-tramp-plink
+- http://stackoverflow.com/questions/43243449/how-do-i-change-the-command-sent-by-tramp-in-emacs-when-using-plink-on-windows
+
+On Windows in order to use TRAMP to connect to a remote host (as if it were ssh) we require:
+1. That putty is installed and the plink binary be in the PATH
+2. The TRAMP default method is set to use plink
+3. A PuTTY session has been created and saved.
+4. Tramp invokes plink with the correct arguments
+
+1. That putty is installed and the plink binary be in the PATH
+#+BEGIN_SRC emacs-lisp
+  ;; Use '\\' as path separator. Just do it - it works.
+  ;; Do not use '\' or just '/' as it causes problems.
+  (setenv "PATH" (concat "C:\\Program Files (x86)\\PuTTY\\;" (getenv "PATH")))
+#+END_SRC
+
+2. The TRAMP default method is set to use plink
+#+BEGIN_SRC emacs-lisp
+  (require 'tramp)
+
+  (setq tramp-default-method "plink")
+  ; (setq tramp-default-user "")
+  ; (setq tramp-default-host "")
+
+  ;(setq tramp-chunksize "500")
+#+END_SRC
+
+3. A PuTTY session has been created and saved.
+   - In the session you should at least define:
+     - session/host name
+     - session/port
+     - connection/data/auto-login username
+     - connection/ssh/auth/private key file for authentication
+   - Optionally (if using a proxy) then also set:
+     - connection/proxy/telnet command, or local proxy command
+
+From there you can use the PuTTY defined session in TRAMP:
+
+#+BEGIN_EXAMPLE example usage 
+  C-x C-f /plink:<session-name-in-PuTTY>:/ RET
+#+END_EXAMPLE
+
+Unfortunately there is no autocomplete with these settings. Will try and find config to enable
+it in the future.
+
+4. Tramp invokes plink with the correct arguments
+
+See:
+- http://stackoverflow.com/questions/43243449/how-do-i-change-the-command-sent-by-tramp-in-emacs-when-using-plink-on-windows
+
+By default tramp invokes plink like so:
+
+#+BEGIN_EXAMPLE example tramp invocation of plink
+  Tramp: Sending command 'plink -ssh -t some_session " env 'TERM=dumb' 'PROMPT_COMMAND=' 'PS1=#$ ' /bin/sh " && exit || exit'
+#+END_EXAMPLE
+
+The problem is that with the ~-ssh~ flag, plink ignores the port specified in the session saved
+in putty and tries to connect to port 22 (even if the session says it is using ssh and wants to
+connect to a different port).
+
+This is fine when you want to connect to port 22 but not ok for when you want to connect to
+another port. So we need to change the way that plink is invoked by tramp to not have the
+~-ssh~ flag. This does not matter in reality because the session saved in PuTTY will have
+stated the connection type of ssh anyway.
+
+#+BEGIN_SRC emacs-lisp
+
+;; ;; Exact same but will produce the default invocation (with -ssh)
+;;   (eval-after-load "tramp"
+;;   '(setf (cadr (assq 'tramp-login-args (cdr (assoc "plink" tramp-methods))))
+;;          '(("-l" "%u") ("-P" "%p") ("-ssh") ("-t") ("%h") ("\"")
+;;            ("env 'TERM=dumb' 'PROMPT_COMMAND=' 'PS1=#$ '") ("/bin/sh") ("\""))))
+
+
+;; ;; Exact same but does not include the -ssh
+(eval-after-load "tramp"
+  '(setf (cadr (assq 'tramp-login-args (cdr (assoc "plink" tramp-methods))))
+         '(("-l" "%u") ("-P" "%p") ("-t") ("%h") ("\"")
+           ("env 'TERM=dumb' 'PROMPT_COMMAND=' 'PS1=#$ '") ("/bin/sh") ("\""))))
+#+END_SRC

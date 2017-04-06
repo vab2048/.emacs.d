@@ -51,6 +51,14 @@
 ;; blocks in the given Org-mode <file>.
 (org-babel-load-file (concat user-emacs-directory "config.org"))
 
+;; If we are running in Windows load the Windows specific config
+(if (eq system-type 'windows-nt)
+  ;; if it is Windows load the windows org file
+  (org-babel-load-file (concat user-emacs-directory "windows.org"))
+  ;; otherwise do nothing
+  ()
+)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;; Initialisation (End) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
