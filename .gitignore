@@ -46,3 +46,7 @@ recentf
 
 # Ignore Scala's Ensime folder - it is not needed in source control
 ensime/
+
+# Ignore .el files which are generated from .org files - no need to track these
+# when the point is to track the .org files.
+windows.el
