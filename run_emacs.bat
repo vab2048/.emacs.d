@@ -1,9 +1,13 @@
-:: Batch script to start emacs with HOME variable set to where .emacs.d folder is.
+:: Example batch script to start emacs.
 :: Script assumes:
 :: i)  it is run from inside the .emacs.d directory
 :: ii) the .emacs.d directory is placed in the extracted directory from the
 ::     pre-built emacs for windows archive. I.E. the parent directory of .emacs.d
 ::     contains bin/ (and the other directories that come with Emacs for Windows).
+:: -----------------------
+:: This is just an example so it is easy to see how you could create an icon launcher
+:: for emacs on the taskbar. In reality it is better to set the HOME environment variable
+:: to the location of the .emacs.d directory and just have the batch script run bin/runemacs.exe
 :: -----------------------
 :: To pin a shortcut to this batch file to the taskbar:
 :: 
