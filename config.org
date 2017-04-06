@@ -485,7 +485,7 @@ The library 'igrep' provides useful searching functionality such as 'fgrep-find'
 ;; N.B. in emacs-lisp it is an 'if () then () else ()' construct
 (if (eq system-type 'windows-nt)
   ;; if it is Windows do nothing
-  (message "it is windows")      
+  (message "Detected emacs is running in Windows so not loading grep")
   ;; if not Windows assume we have the grep binary
   (progn
     (require 'igrep) 
@@ -1009,6 +1009,7 @@ It makes buffers interactive and much nicer to deal with (among other things)!
   :init (helm-mode)
   :bind (("M-y" . helm-show-kill-ring)
          ("C-x r b" . helm-bookmarks)
+         ("M-x" . helm-M-x)
         ;; ("C-x C-b" . helm-buffers-list)
         )
 )
