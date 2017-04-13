@@ -196,6 +196,33 @@ See: http://ergoemacs.org/emacs/emacs_buffer_management.html
 (defalias 'list-buffers 'ibuffer)
 #+end_src
 
+*** open as root
+
+See
+- http://emacsredux.com/blog/2013/04/21/edit-files-as-root/
+
+If we open emacs as a standard user we cannot open files that we do not have permissions
+for. The following allows you to open a file as root from within an existing emacs session.
+We give it a key binding for ease of use. 
+
+#+BEGIN_SRC sh
+(defun sudo-edit (&optional arg)
+  "Edit currently visited file as root.
+
+With a prefix ARG prompt for a file to visit.
+Will also prompt for a file to visit if current
+buffer is not visiting a file."
+  (interactive "P")
+  (if (or arg (not buffer-file-name))
+      (find-file (concat "/sudo:root@localhost:"
+                         (ido-read-file-name "Find file(as root): ")))
+    (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
+
+    (global-set-key (kbd "<f7>") 'sudo-edit)
+#+END_SRC
+
+
+
 ** Windows
 *** Existing Bindings
 
@@ -875,7 +902,6 @@ The currently supported features of idris in emacs (via the compiler) )are:
 `M-x idris-repl` provides an interactive repl whose interaction is like a normal terminal repl
 but specifically for emacs.
 
-
 * TRAMP
 
 ** docker support
@@ -896,7 +922,6 @@ where
       ; This is inconvenient - we would rather show the name so set the variable to true.
       :init (setq docker-tramp-use-names t))
 #+end_src
-
 
 * Ido and Finding Files
 ** IDO
