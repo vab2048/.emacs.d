@@ -1,3 +1,17 @@
+:: This script is not needed anymore. The proper way to get emacs on the taskbar is the following
+:: (taken from https://superuser.com/a/283150):
+::
+:: 1. Run runemacs.exe with no pre-existing icon in the taskbar.
+:: 2. Right click on the running Emacs icon in the taskbar, and click on "pin this program to taskbar."
+:: 3. Close Emacs
+:: 4. Shift right-click on the pinned Emacs icon on the taskbar, click on Properties, and change the target from emacs.exe to runemacs.exe.
+::
+:: After opening files associated with runemacs (such as org files) then the icon on the taskbar will
+:: also show these files in the 'recent' list. This is the desired behaviour and way of achieving it -
+:: not what is shown below (which remains just for reference in the future).
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+::::::::::::::::::::::::::::::::: Below has been retired and is just kept as reference ::::::::::::::::::::::
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Example batch script to start emacs.
 :: Script assumes:
 :: i)  it is run from inside the .emacs.d directory
