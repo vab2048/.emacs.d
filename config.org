@@ -6,6 +6,10 @@
 Key binding explanations:
 - C-c <C-left> - Means CTRL must be pressed for both.
 
+* TODO To look up
+
+
+- https://gitlab.com/emacs-stuff/indent-tools
 LOOK UP AND BIND WINNER MODE
 LOOK UP AND ENABLE FLEX IDO MODE:
   - https://github.com/lewang/flx
@@ -1073,6 +1077,19 @@ Helm swoop is a nice replacement for M-x occur (M-s o).
 )
 #+END_SRC
 
+** Highlight Indentation
+
+#+BEGIN_SRC emacs-lisp
+(use-package highlight-indent-guides
+  :ensure t
+  :init 
+   (highlight-indent-guides-mode)
+   (setq highlight-indent-guides-method 'column)
+)
+
+
+#+END_SRC
+
 ** Magit
 
 Interface for git projects. 
@@ -1173,5 +1190,11 @@ used for config files (Haskell Stack uses it a lot).
 (use-package yaml-mode
   :ensure t
 )
+#+END_SRC
+
+When in YAML we want to highlight indentations to make it clearer which level we are at:
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'text-mode-hook 'highlight-indent-guides-mode)
 #+END_SRC
 
