@@ -18,14 +18,15 @@ LOOK UP AND ENABLE FLEX IDO MODE:
 * Encoding
 
 Basically, use UTF-8 unix encoding for all files with the given file extensions.
+Make it unix line endings as well.
 
 #+BEGIN_SRC emacs-lisp
 ;; Use UTF-8 for all character encoding.
 (set-language-environment 'utf-8)
-(set-default-coding-systems 'utf-8)
-(set-selection-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8-unix)
+(set-selection-coding-system 'utf-8-unix)
 (set-locale-environment "en.UTF-8")
-(prefer-coding-system 'utf-8)
+(prefer-coding-system 'utf-8-unix)
 (setq utf-translate-cjk-mode nil) ; disable CJK coding/encoding
 #+END_SRC
 
