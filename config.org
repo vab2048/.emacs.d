@@ -1023,7 +1023,8 @@ Demos:
   :ensure t
   :diminish ace-jump-mode
   :commands ace-jump-mode
-  :bind ("C-S-s" . ace-jump-mode))  ;; CTRL-SHIFT-s together
+  :bind ("C-M-j" . ace-jump-mode))  ;; ("C-S-s" . ace-jump-mode))  ;; CTRL-SHIFT-s together
+        
 #+end_src
 
 ** Expand Region
