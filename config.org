@@ -30,6 +30,11 @@ Make it unix line endings as well.
 (setq utf-translate-cjk-mode nil) ; disable CJK coding/encoding
 #+END_SRC
 
+In order to change the encoding on a buffer by buffer basis:
+
+Call ~set-buffer-file-coding-system~, then give one of: {mac, dos, unix}. Then, save the file.
+
+For more information on line endings, see: http://ergoemacs.org/emacs/emacs_line_ending_char.html
 
 * Use-package notes
 ** Use-package
@@ -200,6 +205,23 @@ Set the colour of the minibuffer prompt to green for better readability.
   :init (powerline-center-theme)
 )
 #+end_src
+
+* Whitespace
+
+** Show trailing whitespace
+
+See:
+- https://stackoverflow.com/a/11701899/5108875
+
+The following defines a function "tf-toggle..." which when toggled on will highlight any
+trailing whitespace in a buffer.
+
+#+BEGIN_SRC emacs-lisp
+(defun tf-toggle-show-trailing-whitespace ()
+  "Toggle show-trailing-whitespace between t and nil"
+  (interactive)
+  (setq show-trailing-whitespace (not show-trailing-whitespace)))
+#+END_SRC
 
 * Buffers, Windows, Frames, and Scratch Buffer
 ** Buffers
