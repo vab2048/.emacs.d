@@ -742,7 +742,29 @@ M-x commands to use to understand colours:
 | M-x list-faces-display  | Lists the `attributes` available to set the    |
 |                         | colours to one of the `list-colors-display`.   |
 
-* Flyspell/ISpell
+* Flyspell, ASpell/ISpell
+
+Flyspell enables on-the-fly spell checking in Emacs by the means of a minor mode. It is called
+Flyspell. This facility is hardly intrusive. It requires no help. Flyspell highlights incorrect
+words as soon as they are completed or as soon as the TextCursor hits a new word.
+
+From Emacs 24.2, Emacs includes Flyspell. However, Flyspell needs a spell checking tool, which
+is not included in Emacs. One of the older tools is called iSpell (there is still a lot of
+documentation which refers to iSpell) but it has more or less been replaced by aspell now.
+
+
+** Getting Aspell
+
+*** Windows
+
+1. Make sure you have cygwin installed
+2. Make sure you have the apt-cyg utility available so you can install cygwin packages on the
+   command line.
+  - https://github.com/transcode-open/apt-cyg
+3. Run ~apt-cyg install aspell~ to install aspell and ~apt-cyg install apell-en~ to install the
+   english dictionaries required.
+
+
 ** Default Dictionary
 We want the default dictionary to be British english rather than American.
 
@@ -753,8 +775,11 @@ We want the default dictionary to be British english rather than American.
 We want to turn flyspell mode on for the following major modes:
 
 #+BEGIN_SRC emacs-lisp
-(add-hook 'org-mode-hook 'flyspell-mode)
+
+  (global-flycheck-mode)
+  ; (add-hook 'org-mode-hook 'flyspell-mode)
 #+END_SRC
+
 
 * Unicode and LaTeX
 ** Unicode
