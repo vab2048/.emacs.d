@@ -775,9 +775,13 @@ We want the default dictionary to be British english rather than American.
 We want to turn flyspell mode on for the following major modes:
 
 #+BEGIN_SRC emacs-lisp
+  
+  (add-hook 'org-mode-hook 'flyspell-mode)
 
-  (global-flycheck-mode)
-  ; (add-hook 'org-mode-hook 'flyspell-mode)
+  ; For Scala just enable flyspell in the comments
+  (add-hook 'scala-mode-hook
+          (lambda ()
+            (flyspell-prog-mode)))
 #+END_SRC
 
 
