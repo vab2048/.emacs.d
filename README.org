@@ -31,8 +31,41 @@ essentially the control flow is as follows:
 
 That's basically it. 
 
-* Common Problems
+* Common Problems/Errors
 
+** File error: Cannot open load file, No such file or directory, use-package
+
+This usually relates to the first time you use this config or if you are using it from
+scratch. Basically in init.el there are a number of lines which need to be uncommented if it is
+the first time you are using this config:
+
+#+BEGIN_SRC emacs-lisp
+;; (Start) Uncomment this if it is the first time using the config
+   (unless (package-installed-p 'use-package) ;; use-package used to isolate 
+    (package-refresh-contents)               ;; and configure packages in
+    (package-install 'use-package))          ;; a friendly and tidy manner. 
+  
+   (unless (package-installed-p 'bind-key) 
+    (package-refresh-contents)            
+    (package-install 'use-package))       
+  
+   (unless (package-installed-p 'diminish) ;; For reducing the minor modes which
+    (package-refresh-contents)            ;; appear in the mode line.
+    (package-install 'use-package)) 
+;; (End)  Uncomment this if it is the first time using the config
+
+#+END_SRC
+
+Make sure they are uncommented and reopen emacs.
+
+** error: Required feature 'pyvenv' was not provided
+
+To solve this issue run the following commands from within emacs:
+
+~M-x package-reinstall RET pyvenv~
+~M-x package-reinstall RET elpy~
+
+This will install the packages required for Python.
 ** Incompatible .elc files
 
 Using compiled =.elc= files which were compiled for a previous/different version of emacs may

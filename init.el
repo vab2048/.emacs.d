@@ -23,6 +23,7 @@
 
 ;; The following packages are mandatory for this emacs config. The following
 ;; checks whether they are installed and if they aren't installs them.
+;; (Start) Uncomment this if it is the first time using the config
 ;; (unless (package-installed-p 'use-package) ;; use-package used to isolate 
 ;;  (package-refresh-contents)               ;; and configure packages in
 ;;  (package-install 'use-package))          ;; a friendly and tidy manner. 
@@ -34,6 +35,8 @@
 ;; (unless (package-installed-p 'diminish) ;; For reducing the minor modes which
 ;;  (package-refresh-contents)            ;; appear in the mode line.
 ;;  (package-install 'use-package)) 
+;; (End)  Uncomment this if it is the first time using the config
+
 
 ;; use-package is not needed at runtime so evaluate it at compile time to reduce
 ;; emacs load time.
