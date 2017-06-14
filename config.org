@@ -784,7 +784,6 @@ We want to turn flyspell mode on for the following major modes:
             (flyspell-prog-mode)))
 #+END_SRC
 
-
 * Unicode and LaTeX
 ** Unicode
 
@@ -972,6 +971,16 @@ The currently supported features of idris in emacs (via the compiler) )are:
 
 `M-x idris-repl` provides an interactive repl whose interaction is like a normal terminal repl
 but specifically for emacs.
+
+** XML
+
+
+Keybindings for nXML mode:
+
+| Key     | Function            | Description                    |
+|---------+---------------------+--------------------------------|
+| C-c C-f | nxml-finish-element | Insert close tag automatically |
+
 
 * TRAMP
 
