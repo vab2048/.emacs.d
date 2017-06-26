@@ -1,4 +1,3 @@
-
 #+TITLE: Emacs Configuration File
 #+AUTHOR: Vikram Bakshi
 #+STARTUP: inlineimages
@@ -23,10 +22,10 @@ Make it unix line endings as well.
 #+BEGIN_SRC emacs-lisp
 ;; Use UTF-8 for all character encoding.
 (set-language-environment 'utf-8)
-(set-default-coding-systems 'utf-8-unix)
-(set-selection-coding-system 'utf-8-unix)
+(set-default-coding-systems 'utf-8)
+(set-selection-coding-system 'utf-8)
 (set-locale-environment "en.UTF-8")
-(prefer-coding-system 'utf-8-unix)
+(prefer-coding-system 'utf-8)
 (setq utf-translate-cjk-mode nil) ; disable CJK coding/encoding
 #+END_SRC
 
@@ -782,6 +781,12 @@ We want to turn flyspell mode on for the following major modes:
   (add-hook 'scala-mode-hook
           (lambda ()
             (flyspell-prog-mode)))
+
+  ; For Java just enable flyspell in the comments
+  (add-hook 'java-mode-hook
+          (lambda ()
+            (flyspell-prog-mode)))
+
 #+END_SRC
 
 * Unicode and LaTeX
