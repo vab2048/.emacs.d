@@ -533,6 +533,40 @@ Pressing '<s TAB' in org mode automatically inserts a 'source code block'.
 
 #+END_SRC
 
+** Org misc settings
+
+See:
+- http://orgmode.org/manual/Special-symbols.html
+
+By default org mode assumes:
+- anything after a '_' should be subscript
+  - e.g. ~some_name_of_variable~
+- anything after a '^' should be superscript
+  - e.g. ~2^x~
+- this may or may not be what is desired
+
+By setting org-use-sub-superscripts to "{}" then you can explicitly make org use
+sub/superscript where you want:
+- e.g:
+  - ~some_name_of_variable~ - no subscript
+  - ~a_{i}~                 - subscript
+  - ~a^x~                   - no superscript
+  - ~a^{x}~                 - superscript
+
+#+BEGIN_SRC emacs-lisp
+
+; Only make something after a '_' subscript if it is enclosed with {}
+; Only make something after a '^' superscript if it is enclosed with {}
+(setq org-use-sub-superscripts "{}")
+
+; Set pretty-entities to true so superscripts and subscripts are displayed
+; as WYSIWYM e.g. 2^{2} will appear as superscript and x_{i} will be subscript
+(setq org-pretty-entities t)
+
+
+#+END_SRC
+
+
 * Text Mode
 
 ** Org Table Minor Mode
