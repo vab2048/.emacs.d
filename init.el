@@ -88,38 +88,4 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; testing cua mode functions (delete once complete)
-
-
-(defun cua-activate-plus-set-rectangle-mark()
-  "If CUA mode not activated, activates it then runs cua-set-rectangle-mark.
-   If it is active, just runs cua-set-rectangle-mark. "
-   (interactive)
-
-   ; After emacs 23.2: no arg to minor mode will turn on. Arg of nil will also turn on.
-   (cua-mode) ; Make sure cua-mode is on 
-   (cua-set-rectangle-mark))
-
-;(bind-key "<f6>"  'cua-activate-plus-set-rectangle-mark)
-;; 
-(global-set-key (kbd "<f6>") 'cua-activate-plus-set-rectangle-mark)
-
-(defun cua-mode-off()
-  "Cancels any open active region/rectangle and turns CUA mode off"
-  (interactive)
-  (cua-cancel)
-  (setq cua-mode nil))
- 
-(global-set-key (kbd "<f5>") 'cua-mode-off)
-
-
-
-
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
 

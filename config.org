@@ -570,6 +570,9 @@ CUA mode rectangles are very useful.
 #+BEGIN_SRC emacs-lisp
 (setq cua-auto-tabify-rectangles nil) ;; Don't tabify after rectangle commands
 (transient-mark-mode 1) ;; No region when it is not highlighted
+
+;; Overwrite the Emacs rectangle command to use the CUA mode version instead
+(global-set-key (kbd "C-x SPC") 'cua-rectangle-mark-mode)
 #+END_SRC
 
 * Eshell, Shell, Term, and Ansi-Term
