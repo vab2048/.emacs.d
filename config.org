@@ -400,9 +400,13 @@ VLM does this. Other times it is just annoying as you may just want to kill the
 whole line. 
 
 #+BEGIN_SRC emacs-lisp
-; (global-visual-line-mode)
-; (setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
-; (diminish 'visual-line-mode)  ;; Remove 'vl Wrap' from mode line.
+  ; (global-visual-line-mode)
+
+  ; Have arrows in margins to indicate logical line is wrapped
+  ; even in visual line mode
+  (setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+
+  ; (diminish 'visual-line-mode)  ;; Remove 'vl Wrap' from mode line.
 #+END_SRC
 
 *** auto-fill-mode
@@ -590,7 +594,7 @@ The library 'igrep' provides useful searching functionality such as 'fgrep-find'
   (message "Detected emacs is running in Windows so not loading grep")
   ;; if not Windows assume we have the grep binary
   (progn
-    (require 'igrep) 
+    (require 'igrep)
     ;; Define keybinding so can be pressed whether CTRL is held down or not.
     (global-set-key (kbd "C-x g") 'fgrep-find)
     (global-set-key (kbd "C-x C-g") 'fgrep-find))
@@ -1022,6 +1026,15 @@ Keybindings for nXML mode:
 | Key     | Function            | Description                    |
 |---------+---------------------+--------------------------------|
 | C-c C-f | nxml-finish-element | Insert close tag automatically |
+
+** PHP
+
+#+begin_src emacs-lisp
+(use-package php-mode
+  :ensure t)
+#+end_src
+
+
 
 
 * TRAMP
