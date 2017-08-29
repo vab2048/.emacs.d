@@ -1036,6 +1036,15 @@ Keybindings for nXML mode:
 
 
 
+** Visual Basic
+
+From https://github.com/emacsmirror/emacswiki.org/blob/master/visual-basic-mode.el
+
+#+BEGIN_SRC emacs-lisp
+  (load-file "~/.emacs.d/lisp/visual-basic-mode.el")
+  
+#+END_SRC
+
 
 * TRAMP
 
