@@ -1035,14 +1035,18 @@ Keybindings for nXML mode:
 #+end_src
 
 
-
 ** Visual Basic
 
 From https://github.com/emacsmirror/emacswiki.org/blob/master/visual-basic-mode.el
 
 #+BEGIN_SRC emacs-lisp
   (load-file "~/.emacs.d/lisp/visual-basic-mode.el")
-  
+
+  ; Set mode to autoload for the given file extensions
+  (setq auto-mode-alist (append '(("\\.\\(frm\\|bas\\|cls\\|vba\\)$" .
+                                  visual-basic-mode)) auto-mode-alist))
+
+
 #+END_SRC
 
 
