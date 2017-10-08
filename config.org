@@ -1018,6 +1018,14 @@ The currently supported features of idris in emacs (via the compiler) )are:
 `M-x idris-repl` provides an interactive repl whose interaction is like a normal terminal repl
 but specifically for emacs.
 
+** INI
+#+begin_src emacs-lisp
+(use-package ini-mode
+  :ensure t
+)
+#+end_src
+
+
 ** XML
 
 
