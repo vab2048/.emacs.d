@@ -872,6 +872,19 @@ based on their hex code.
 #+END_SRC
 
 * Languages
+** Apache Web Server
+
+We want ~apache-mode~ - a major mode for editing Apache configuration files.
+This is useful for ~apache2.conf~ / ~httpd.conf~ / ~.htaccess~
+
+#+begin_src emacs-lisp
+(use-package apache-mode
+  :ensure t
+)
+#+end_src
+
+
+
 ** Python
 
 #+begin_src emacs-lisp
