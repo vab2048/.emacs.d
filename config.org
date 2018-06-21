@@ -582,7 +582,6 @@ sub/superscript where you want:
 
 #+END_SRC
 
-
 * Text Mode
 
 ** Org Table Minor Mode
@@ -613,6 +612,11 @@ The library 'igrep' provides useful searching functionality such as 'fgrep-find'
     (global-set-key (kbd "C-x C-g") 'fgrep-find))
 )
 #+END_SRC
+
+** Ack
+
+Ack is a perl program 
+
 
 ** CUA Mode
 

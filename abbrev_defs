@@ -5,11 +5,11 @@
 
 (define-abbrev-table 'Info-edit-mode-abbrev-table '())
 
+(define-abbrev-table 'apache-mode-abbrev-table '())
+
 (define-abbrev-table 'awk-mode-abbrev-table
   '(
    ))
-
-(define-abbrev-table 'bibtex-mode-abbrev-table '())
 
 (define-abbrev-table 'c++-mode-abbrev-table
   '(
@@ -67,19 +67,11 @@
 
 (define-abbrev-table 'haskell-cabal-mode-abbrev-table '())
 
-(define-abbrev-table 'haskell-compilation-mode-abbrev-table '())
-
-(define-abbrev-table 'haskell-debug-mode-abbrev-table '())
-
-(define-abbrev-table 'haskell-error-mode-abbrev-table '())
-
-(define-abbrev-table 'haskell-interactive-mode-abbrev-table '())
-
 (define-abbrev-table 'haskell-mode-abbrev-table '())
 
-(define-abbrev-table 'haskell-presentation-mode-abbrev-table '())
-
 (define-abbrev-table 'haskell-yesod-parse-routes-mode-abbrev-table '())
+
+(define-abbrev-table 'helm-major-mode-abbrev-table '())
 
 (define-abbrev-table 'help-mode-abbrev-table '())
 
@@ -102,8 +94,6 @@
 (define-abbrev-table 'idris-repl-mode-abbrev-table '())
 
 (define-abbrev-table 'idris-tree-info-mode-abbrev-table '())
-
-(define-abbrev-table 'inferior-haskell-mode-abbrev-table '())
 
 (define-abbrev-table 'inferior-python-mode-abbrev-table '())
 
@@ -172,6 +162,8 @@
 (define-abbrev-table 'tabulated-list-mode-abbrev-table '())
 
 (define-abbrev-table 'tar-mode-abbrev-table '())
+
+(define-abbrev-table 'term-mode-abbrev-table '())
 
 (define-abbrev-table 'text-mode-abbrev-table '())
 
