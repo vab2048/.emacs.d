@@ -582,6 +582,25 @@ sub/superscript where you want:
 
 #+END_SRC
 
+* Custom Tweaks
+
+** Open current directory of buffer in explorer
+
+Taken from:
+- https://emacs.stackexchange.com/a/7745
+
+This creates an interactive function 'browse-file-directory' which will open up the directory
+in your OS's file browser.
+
+#+BEGIN_SRC emacs-lisp
+(defun browse-file-directory ()
+  "Open the current file's directory however the OS would."
+  (interactive)
+  (if default-directory
+      (browse-url-of-file (expand-file-name default-directory))
+    (error "No `default-directory' to open")))
+#+END_SRC
+
 * Text Mode
 
 ** Org Table Minor Mode
@@ -1112,7 +1131,6 @@ From https://github.com/emacsmirror/emacswiki.org/blob/master/visual-basic-mode.
 
 #+END_SRC
 
-
 * TRAMP
 
 ** docker support
@@ -1142,7 +1160,6 @@ Causes issues when installed, so left out.
 ; (use-package vagrant-tramp
 ;   :ensure t)
 #+end_src
-
 
 
 
