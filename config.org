@@ -593,7 +593,7 @@ This creates an interactive function 'browse-file-directory' which will open up 
 in your OS's file browser.
 
 #+BEGIN_SRC emacs-lisp
-(defun browse-file-directory ()
+(defun explorer-here ()
   "Open the current file's directory however the OS would."
   (interactive)
   (if default-directory
