@@ -1327,6 +1327,23 @@ Helm swoop is a nice replacement for M-x occur (M-s o).
 
 #+END_SRC
 
+** Highlight Characters (Tabs))
+
+The highlight characters package is useful to specifically highlight annoying tabs in a
+buffer. 
+
+#+BEGIN_SRC emacs-lisp
+(load-file "~/.emacs.d/lisp/highlight-chars.el")
+#+END_SRC
+
+Let's enable this tab highlighting by default:
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'font-lock-mode-hook 'hc-highlight-tabs)
+#+END_SRC
+
+
+
 ** Magit
 
 Interface for git projects. 
