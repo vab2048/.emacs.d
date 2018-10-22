@@ -24,7 +24,7 @@ Make it unix line endings as well.
 
 #+BEGIN_SRC emacs-lisp
 ;; disable CJK coding/encoding (Chinese/Japanese/Korean characters)
-(setq utf-translate-cjk-mode nil)
+; (setq utf-translate-cjk-mode nil)
 
 ;; Use UTF-8 for all character encoding and 
 (set-language-environment 'utf-8)
@@ -1130,6 +1130,18 @@ From https://github.com/emacsmirror/emacswiki.org/blob/master/visual-basic-mode.
 
 
 #+END_SRC
+
+** Jinja2
+
+Jinja2 major mode is useful for editing j2 templates
+
+#+begin_src emacs-lisp
+(use-package jinja2-mode
+  :ensure t)
+#+end_src
+
+
+
 
 * TRAMP
 
