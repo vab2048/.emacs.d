@@ -88,3 +88,9 @@ On Windows you can search the .emacs.d folder for "*.elc", sort by file type and
 for elc file.
 
 
+** File is missing: Cannot open load file, No such file or directory, diminish
+
+#+BEGIN_SRC emacs-lisp
+  M-x package-install
+  diminish
+#+END_SRC

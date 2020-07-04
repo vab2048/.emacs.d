@@ -12,7 +12,7 @@
  '(haskell-mode-hook (quote (turn-on-haskell-indentation)))
  '(package-selected-packages
    (quote
-    (vagrant-tramp yaml-mode which-key undo-tree multiple-cursors highlight-indent-guides helm-swoop helm expand-region ace-jump-mode ido-vertical-mode docker-tramp php-mode ini-mode idris-mode ensime haskell-mode elpy langtool bash-completion scratch powerline use-package)))
+    (diminish vagrant-tramp yaml-mode which-key undo-tree multiple-cursors highlight-indent-guides helm-swoop helm expand-region ace-jump-mode ido-vertical-mode docker-tramp php-mode ini-mode idris-mode ensime haskell-mode elpy langtool bash-completion scratch powerline use-package)))
  '(python-indent-offset 4)
  '(python-shell-interpreter "python3"))
 

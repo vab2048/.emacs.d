@@ -968,97 +968,6 @@ This setting affects those files with a .m extension.
 
 #+END_SRC
 
-** Scala
-
-Taken from: 
-- http://www.troikatech.com/blog/2014/11/26/ensime-and-emacs-as-a-scala-ide
-- http://ensime.github.io/build_tools/sbt/
-
-*Steps for setting up SCALA in emacs:*
-
-1. Grab the package 'ensime'. This automatically installs:
- - scala-mode
- - sbt-mode
-
-#+begin_src emacs-lisp
-(use-package ensime
-  :ensure t
-)
-#+end_src
-
-2. Make sure the sbt binary is in the PATH.
-
-3. Add the sbt-ensime plugin to the sbt (scala build tool) config:
-  - File usually found: `~/.sbt/0.13/plugins/plugins.sbt'
-  - Add the following source code to the relevant plugins.sbt file:
-  #+BEGIN_EXAMPLE add_to_plugins_file
-  if (sys.props("java.version").startsWith("1.6"))
-    addSbtPlugin("org.ensime" % "sbt-ensime" % "1.0.0")
-  else
-    addSbtPlugin("org.ensime" % "sbt-ensime" % "1.11.2")
-  #+END_EXAMPLE
-
-4. Navigate to the base directory of a hello world scala application
- - Run 'sbt'
- - Run 'sbt compile'
- - Run 'sbt ensimeConfig'
-
-5. Open a file in the scala project you want to run.
- - In the emacs line mode at the bottom it will say [ENSIME: Disconnected]
-
-6. Create a connection to ensime
-  - Run `M-x ensime`
-
-7. The first time it will run will take a while - it will update the server.
-  - It will appear `Scala : [<name of directory>]' once connected
-
-
-#+BEGIN_SRC emacs-lisp
-  ;; If you don't set this to nil you will get a message about
-  ;; using snapshot version each time ENSIME connects to the server
-  (setq ensime-startup-snapshot-notification nil)
-#+END_SRC
-
-*** Common errors
-
-*Error: Could not retrieve sbt 0.13.9*
-apt-get install ca-certificates-java
-sudo update-ca-certificates -f 
-
-*Shared Folders*
-You cannot make symlinks between shared folders of a VM and the VM's other filesystem.
-See http://stackoverflow.com/questions/28144833/operation-not-permitted-in-sbt-typesafe-activator-inside-vagrant-synced-folder
-
-
-*You have a different version of scala for ENSIME (2.10.5) and root (2.11.7).*
-[error] You have a different version of scala for ENSIME (2.10.5) and root (2.11.7).
-[error] If this is not what you intended, use either
-[error]   scalaVersion in ThisBuild := "2.11.7"
-[error] in your build.sbt or add
-[error]   ensimeScalaVersion in ThisBuild := "2.11.7"
-[error] to a local ensime.sbt
-[warn] No Java sources detected in /usr/lib/jvm/java-8-openjdk-amd64 (your ENSIME experience will not be as good as it could be.)
-
-In the project's build.sbt file add the line which defines the ensimeScalaVersion:
-
-#+BEGIN_EXAMPLE example_of_adding_ensimeScalaVersion
-name := course.value + "-" + assignment.value
-
-scalaVersion := "2.11.7"
-
-ensimeScalaVersion in ThisBuild := "2.11.7" // For ensime (emacs)
-
-#+END_EXAMPLE
-
-*** Ensime key bindings
-
-REPL
-| C-c C-v z | Launch embedded Scala REPL which is project aware |
-
-Errors
-| C-c C-c e | List all errors and warnings in separate window.  |
-| C-c C-v e | With cursor on error, display error in minibuffer |
-
 ** Idris
 
 Configuration assuming you have Idris mode installed as well as the binaries (which are
@@ -1182,7 +1091,7 @@ Causes issues when installed, so left out.
   :init
   (progn
     (setq ido-enable-flex-matching t)
-    (setq ido-everywhere t)
+    ; (setq ido-everywhere t) ;; causes issues when enabled on emacs 26+
     (ido-mode t)
     ;; (use-package ido-ubiquitous
     ;;   :ensure t
