@@ -1023,9 +1023,11 @@ Taken from:
  - sbt-mode
 
 #+begin_src emacs-lisp
-(use-package ensime
-  :ensure t
-)
+  ; ensime not available for some reason anymore.
+  ; get error: Error (use-package): Failed to install ensime: Package ‘ensime-’ is unavailable
+  ;; (use-package ensime
+  ;;   :ensure t
+  ;;)
 #+end_src
 
 2. Make sure the sbt binary is in the PATH.
