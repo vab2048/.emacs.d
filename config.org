@@ -532,9 +532,10 @@ Example of Step 2 when inserting an image:
 #+ATTR_ORG: :width 100
 [[./Images/business_domain_centric_approach_a.png]]
 
-** Org babel/source blocks
+** Org blocks
 
-Pressing '<s TAB' in org mode automatically inserts a 'source code block'.
+
+*** Org babel/source blocks
 
 #+BEGIN_SRC emacs-lisp
 
@@ -547,6 +548,21 @@ Pressing '<s TAB' in org mode automatically inserts a 'source code block'.
   '((emacs-lisp . t)
     (python . t)))
 
+#+END_SRC
+
+*** Org insert blocks
+
+See:
+- https://emacs.stackexchange.com/questions/46988/why-do-easy-templates-e-g-s-tab-in-org-9-2-not-work
+
+Pressing '<s TAB' in org mode automatically used to automatically inserts a 'source code
+block'. Newer versions of org don't do this.
+- you can use ~C-c C-,~ instead.
+- we add the behaviour back by requiring the 'org-tempo module
+
+#+BEGIN_SRC emacs-lisp
+  ;; Add org-tempo to org modules to bring back snippet shortcuts
+  (require 'org-tempo)
 #+END_SRC
 
 ** Org misc settings
