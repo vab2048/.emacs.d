@@ -493,8 +493,10 @@ directory first---see `custom-theme-load-path'.
 
 #+END_SRC
 
-** Org images
+** Org Startup
 
+
+*** Startup images   
 The variable `org-startup-with-inline-images` can be set globally to
 show inline images when loading a new Org file.
 
@@ -511,7 +513,7 @@ one of the following lines anywhere in the buffer:
 You can also toggle inline images with:
 C-c C-x C-v     (org-toggle-inline-images)
 
-*** Setting custom width of images inline and for export
+**** Setting custom width of images inline and for export
 
 In order to be able to amend the image width displayed inline we need to do two things:
 1. Set org-image-actual-width to nil
@@ -531,6 +533,33 @@ Example of Step 2 when inserting an image:
 #+NAME:   fig:business_domain_centric_approach_a
 #+ATTR_ORG: :width 100
 [[./Images/business_domain_centric_approach_a.png]]
+
+*** Startup folded
+
+See:
+- https://orgmode.org/manual/Initial-visibility.html
+
+When Emacs first visits an Org file, the global state is set to showeverything, i.e., all file
+content is visible. We don't want this behaviour so we set org-startup-folded to true
+
+#+begin_src emacs-lisp
+(setq org-startup-folded t)
+#+end_src
+
+Alternatively you can set the startup behaviour on a per-file basis by adding one of the
+following startup directives to the org file:
+
+#+begin_quote different directives for startup behaviour on a perfile bases
+#+STARTUP: overview
+#+STARTUP: content
+#+STARTUP: showall
+#+STARTUP: show2levels
+#+STARTUP: show3levels
+#+STARTUP: show4levels
+#+STARTUP: show5levels
+#+STARTUP: showeverything
+#+end_quote
+
 
 ** Org blocks
 
