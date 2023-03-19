@@ -878,9 +878,26 @@ documentation which refers to iSpell) but it has more or less been replaced by a
   
 *** Windows
 
-Also see:
-- https://emacs.stackexchange.com/a/45752
+Taken from https://emacs.stackexchange.com/a/45752:
 
+- You can install aspell or hunspell with https://www.msys2.org/. MSYS2 has native binaries for
+  aspell available which are compatible with Emacs 26.1. Note you can also install emacs using
+  MSYS2 as well.
+  - Install MSYS2 using the instructions from their site.
+  - It was quite easy to do (just a normal windows installer but took ages stuck at 50%).)
+- After installing, MSYS2 MinGW 64-bit should be in your start menu. Launch that, which brings
+  up a terminal, and search for packages using pacman -Ss aspell.
+- There are several options. I ended up using the following two packages to install aspell and
+  an English dictionary:
+  #+begin_quote
+  pacman -S mingw64/mingw-w64-x86_64-aspell
+  pacman -S mingw64/mingw-w64-x86_64-aspell-en
+  #+end_quote>
+- Now you can enter which aspell in the same terminal to find it's location. It'll probably be
+  in C:\msys64\mingw64\bin.
+- Add that path to your "Path" environmental variable.
+  
+**** Archived Instructions
 Original instructions:    
 1. Make sure you have cygwin installed
 2. Make sure you have the apt-cyg utility available so you can install cygwin packages on the
