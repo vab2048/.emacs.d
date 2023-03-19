@@ -875,9 +875,13 @@ documentation which refers to iSpell) but it has more or less been replaced by a
 
 
 ** Getting Aspell
-
+  
 *** Windows
 
+Also see:
+- https://emacs.stackexchange.com/a/45752
+
+Original instructions:    
 1. Make sure you have cygwin installed
 2. Make sure you have the apt-cyg utility available so you can install cygwin packages on the
    command line.
