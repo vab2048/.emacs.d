@@ -40,6 +40,9 @@ Make it unix line endings as well.
 (set-default-coding-systems 'utf-8-unix)
 (set-terminal-coding-system 'utf-8-unix)
 (set-keyboard-coding-system 'utf-8-unix)
+
+;; Note for windows this will cause problems,
+;; and should be overriden (see the windows.org encoding section)
 #+END_SRC
 
 In order to change the encoding on a buffer by buffer basis:
@@ -47,6 +50,8 @@ In order to change the encoding on a buffer by buffer basis:
 Call ~set-buffer-file-coding-system~, then give one of: {mac, dos, unix}. Then, save the file.
 
 For more information on line endings, see: http://ergoemacs.org/emacs/emacs_line_ending_char.html
+
+
 
 * Use-package notes
 ** Use-package

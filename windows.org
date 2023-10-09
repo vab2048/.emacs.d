@@ -12,6 +12,18 @@ Output this to the *Messages* buffer for info.
 (message "Loading Windows Specific Configuration")
 #+END_SRC
 
+* Encoding
+
+See:
+- https://rufflewind.com/2014-07-20/pasting-unicode-in-emacs-on-windows
+
+Originally I set ~(set-selection-coding-system 'utf-8)~ but on Windows it caused problems
+copying unicode characters into the buffer. The correct value is 'utf-16-le because the
+Windows API is built entirely on top of UTF-16.
+
+#+BEGIN_SRC emacs-lisp
+(set-selection-coding-system 'utf-16-le) ;
+#+END_SRC
 * HTTPS Errors on Windows
 
 See resources:
