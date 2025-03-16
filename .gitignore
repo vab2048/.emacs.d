@@ -50,3 +50,6 @@ ensime/
 # Ignore .el files which are generated from .org files - no need to track these
 # when the point is to track the .org files.
 windows.el
+
+# Ignore IntelliJ Idea folder
+.idea/
