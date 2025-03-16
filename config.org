@@ -1,6 +1,6 @@
 #+TITLE: Emacs Configuration File
 #+AUTHOR: Vikram Bakshi
-#+STARTUP: inlineimages
+#+STARTUP: inlineimages fold
 
 Key binding explanations:
 - C-c <C-left> - Means CTRL must be pressed for both.
@@ -50,7 +50,6 @@ In order to change the encoding on a buffer by buffer basis:
 Call ~set-buffer-file-coding-system~, then give one of: {mac, dos, unix}. Then, save the file.
 
 For more information on line endings, see: http://ergoemacs.org/emacs/emacs_line_ending_char.html
-
 
 
 * Use-package notes
@@ -878,7 +877,6 @@ From Emacs 24.2, Emacs includes Flyspell. However, Flyspell needs a spell checki
 is not included in Emacs. One of the older tools is called iSpell (there is still a lot of
 documentation which refers to iSpell) but it has more or less been replaced by aspell now.
 
-
 ** Getting Aspell
   
 *** Windows
@@ -891,14 +889,14 @@ Taken from https://emacs.stackexchange.com/a/45752:
   - Install MSYS2 using the instructions from their site.
   - It was quite easy to do (just a normal windows installer but took ages stuck at 50%).)
 - After installing, MSYS2 MinGW 64-bit should be in your start menu. Launch that, which brings
-  up a terminal, and search for packages using pacman -Ss aspell.
+  up a terminal, and search for packages using ~pacman -Ss aspell~
 - There are several options. I ended up using the following two packages to install aspell and
   an English dictionary:
   #+begin_quote
   pacman -S mingw64/mingw-w64-x86_64-aspell
   pacman -S mingw64/mingw-w64-x86_64-aspell-en
   #+end_quote>
-- Now you can enter which aspell in the same terminal to find it's location. It'll probably be
+- Now you can enter ~which aspell~ in the same terminal to find it's location. It'll probably be
   in C:\msys64\mingw64\bin.
 - Add that path to your "Path" environmental variable.
   
@@ -1286,7 +1284,6 @@ Jinja2 major mode is useful for editing j2 templates
   :ensure t)
 #+end_src
 
-
 * TRAMP
 
 ** docker support
@@ -1316,7 +1313,6 @@ Causes issues when installed, so left out.
 ; (use-package vagrant-tramp
 ;   :ensure t)
 #+end_src
-
 
 * Ido and Finding Files
 ** IDO
