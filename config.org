@@ -52,6 +52,41 @@ Call ~set-buffer-file-coding-system~, then give one of: {mac, dos, unix}. Then, 
 For more information on line endings, see: http://ergoemacs.org/emacs/emacs_line_ending_char.html
 
 
+** Emojis
+
+See:
+- https://emacs.stackexchange.com/a/79976
+
+#+begin_src emacs-lisp
+; set up unicode symbols (order matters!)
+
+(set-fontset-font
+ t
+ 'emoji
+ (cond
+  ((member "Apple Color Emoji" (font-family-list)) "Apple Color Emoji")
+  ((member "Noto Color Emoji" (font-family-list)) "Noto Color Emoji")
+  ((member "Noto Emoji" (font-family-list)) "Noto Emoji")
+  ((member "Segoe UI Emoji" (font-family-list)) "Segoe UI Emoji")  ; 🧗
+  ((member "Symbola" (font-family-list)) "Symbola")))
+
+(set-fontset-font
+ t
+ 'symbol
+ (cond
+  ((member "Segoe UI Symbol" (font-family-list)) "Segoe UI Symbol")
+  ((member "Apple Symbols" (font-family-list)) "Apple Symbols")
+  ((member "Symbola" (font-family-list)) "Symbola")))
+
+; nice on windows...
+
+(cond
+  ((eq system-type 'windows-nt)
+   (set-fontset-font t '(#x1F300 . #x1F5FF) "Segoe UI Symbol")))  ; 🔁, Miscellaneous Symbols and Pictographs
+#+end_src
+
+
+
 * Use-package notes
 ** Use-package
 
